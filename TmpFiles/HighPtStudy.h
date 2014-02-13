@@ -13,7 +13,6 @@
 #include <TFile.h>
 
 #include "CategoryDef.h"
-#include "TLorentzVector.h"
 
 // Header file for the classes stored in the TTree if any.
 
@@ -36,16 +35,7 @@ public :
    Float_t         pthat;
    Float_t         PVzSim;
    Int_t           nPUtrue;
-   Int_t           nPU; 
-   
-   Int_t           nbQuarks;
-   Float_t         bQuark_pT[10000];   //[nbQuarks]
-   Float_t         bQuark_eta[10000];   //[nbQuarks]
-   Float_t         bQuark_phi[10000];   //[nbQuarks]
-   Int_t           bQuark_pdgID[10000];   //[nbQuarks]
-   Int_t           bQuark_status[10000];   //[nbQuarks]
-   Int_t           bQuark_fromGSP[10000];   //[nbQuarks]
-  
+   Int_t           nPU;
    Int_t           nTrack;
    Float_t         Track_dxy[10000];   //[nTrack]
    Float_t         Track_dz[10000];   //[nTrack]
@@ -210,8 +200,6 @@ public :
    Float_t         BHadron_phi[1000];   //[nBHadrons]
    Float_t         BHadron_mass[1000];   //[nBHadrons]
    Int_t           BHadron_pdgID[1000];   //[nBHadrons]
-   Float_t         BHadron_SVx[1000];   //[nBHadrons]
-   Float_t         BHadron_SVy[1000];   //[nBHadrons]
 
    // List of branches
    TBranch        *b_BitTrigger;   //!
@@ -225,19 +213,6 @@ public :
    TBranch        *b_PVzSim;   //!
    TBranch        *b_nPUtrue;   //!
    TBranch        *b_nPU;   //!
-   
-   
-   
-   TBranch        *b_nbQuarks;   //!
-   TBranch        *b_bQuark_pT;   //!
-   TBranch        *b_bQuark_eta;   //!
-   TBranch        *b_bQuark_phi;   //!
-   TBranch        *b_bQuark_pdgID;   //!
-   TBranch        *b_bQuark_status;   //!
-   TBranch        *b_bQuark_fromGSP;   //!
-   
-   
-   
    TBranch        *b_nTrack;   //!
    TBranch        *b_Track_dxy;   //!
    TBranch        *b_Track_dz;   //!
@@ -402,8 +377,6 @@ public :
    TBranch        *b_BHadron_phi;   //!
    TBranch        *b_BHadron_mass;   //!
    TBranch        *b_BHadron_pdgID;   //!
-   TBranch        *b_BHadron_SVx;   //!
-   TBranch        *b_BHadron_SVy;   //!
 
    HighPtStudy(TTree *tree=0);
    virtual ~HighPtStudy();
@@ -412,9 +385,9 @@ public :
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
    virtual void     Loop(int cut, int type);
-   //virtual void     plotLoop();
-   //virtual void     plot1D(TString histo_name, int whatPlot);
-   //virtual void     plot2D(TString histo_name);   
+   virtual void     plotLoop();
+   virtual void     plot1D(TString histo_name, int whatPlot);
+   virtual void     plot2D(TString histo_name);   
    virtual void     run();   
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
@@ -422,21 +395,6 @@ public :
    
    virtual bool     IsInCategory(float trkEta, float trkHTrk, float trkHPix, float trkp, float trkChi2, CategoryDef d);
    virtual bool     passTrackSel(int trk, int pix, float ip2d, float pt, float len, float chi2, float zip, float dist, float eta, float etaJet, float phi, float phiJet, float ptJet);
-   
-   virtual double                    jetProbability( std::vector<double>  v) ;
-   virtual std::vector<TH1D* >       GetCategories(const char* fileInPutName);
-   //virtual void                      ComputeProba(const char*fileInPutName);
-   
-   
-   bool DeltaRTrackJetCut(double jetpT, double deltaR);
-   bool TrackPtCut(double jetpT, double trackpt);
-   
-   virtual double                    calculTrackProba(float p, float eta,int nhit, int npix, float chi,float ipsig,std::vector<TH1D*> vectHis, std::vector<TH1D*> vectTrkP,std::vector<CategoryDef> vectHisCat);
-
-   double optimizedDeltaR(double jetpT);
-   
-   float calculPtRel(TLorentzVector theTrack, TLorentzVector theJet );
-
 };
 
 #endif
@@ -449,12 +407,11 @@ HighPtStudy::HighPtStudy(TTree *tree) : fChain(0)
    
    TChain *superTree = new TChain("btagana/ttree");
    // Data
-   if (tree == 0) {
-  
-   superTree->Add("/opt/sbg/data/data2/cms/cbeluffi/BTag_2013_06_24/DataLegacy/BTagAna/CMSSW_5_3_11_patch5/src/RecoBTag/PerformanceMeasurements/test/mc_calib_confirm2/JetTree_*.root");
+
+   //superTree->Add("/opt/sbg/data/data2/cms/cbeluffi/BTag_2013_06_24/DataLegacy/BTagAna/CMSSW_5_3_11_patch5/src/RecoBTag/PerformanceMeasurements/test/mc_calib_confirm2/JetTree_*.root");
 // superTree->Add("/opt/sbg/cms/ui8_data1/ccollard/BTAG/MC_Dan_2013April/PythiaQCD/QCD_Pt-30to50_Inclusive_8TeV_pythia6_Summer12_DR53X-PU_S10_AODSIM/TrackTree_*.root");
 // superTree->Add("/opt/sbg/cms/ui8_data1/ccollard/BTAG/MC_Dan_2013April/PythiaQCD/QCD_Pt-50to80_Inclusive_8TeV_pythia6_Summer12_DR53X-PU_S10_AODSIM/TrackTree_*.root");
-// superTree->Add("/opt/sbg/cms/ui8_data1/ccollard/BTAG/MC_Dan_2013April/PythiaQCD/QCD_Pt-80to120_Inclusive_8TeV_pythia6_Summer12_DR53X-PU_S10_AODSIM/TrackTree_*.root");
+ superTree->Add("/opt/sbg/cms/ui8_data1/ccollard/BTAG/MC_Dan_2013April/PythiaQCD/QCD_Pt-80to120_Inclusive_8TeV_pythia6_Summer12_DR53X-PU_S10_AODSIM/TrackTree_*.root");
 // superTree->Add("/opt/sbg/cms/ui8_data2/ccollard/BTAG/MC_Dan_2013April/PythiaQCD/QCD_Pt-120to170_Inclusive_8TeV_pythia6_Summer12_DR53X-PU_S10_AODSIM/TrackTree_*.root");
 // superTree->Add("/opt/sbg/cms/ui8_data2/ccollard/BTAG/MC_Dan_2013April/PythiaQCD/QCD_Pt-170to300_Inclusive_8TeV_pythia6_Summer12_DR53X-PU_S10_AODSIM/TrackTree_*.root");
 //superTree->Add("/opt/sbg/cms/ui8_data1/ccollard/BTAG/MC_Dan_2013April/PythiaQCD/QCD_Pt-300to470_Inclusive_8TeV_pythia6_Summer12_DR53X-PU_S10_AODSIM/TrackTree_*.root");
@@ -462,8 +419,8 @@ HighPtStudy::HighPtStudy(TTree *tree) : fChain(0)
 //superTree->Add("/opt/sbg/cms/ui8_data2/ccollard/BTAG/MC_Dan_2013April/PythiaQCD/QCD_Pt-600to800_Inclusive_8TeV_pythia6_Summer12_DR53X-PU_S10_AODSIM/TrackTree_*.root");
 //superTree->Add("/opt/sbg/cms/ui8_data2/ccollard/BTAG/MC_Dan_2013April/PythiaQCD/QCD_Pt-800to1000_Inclusive_8TeV_pythia6_Summer12_DR53X-PU_S10_AODSIM/TrackTree_*.root");
    
+   
    Init(superTree);
-   } else Init(tree);
    
    
 
@@ -518,25 +475,9 @@ void HighPtStudy::Init(TTree *tree)
    fChain->SetBranchAddress("nPV", &nPV, &b_nPV);
    fChain->SetBranchAddress("PVz", &PVz, &b_PVz);
    fChain->SetBranchAddress("pthat", &pthat, &b_pthat);
-   //fChain->SetBranchAddress("PVzSim", &PVzSim, &b_PVzSim);
+   fChain->SetBranchAddress("PVzSim", &PVzSim, &b_PVzSim);
    fChain->SetBranchAddress("nPUtrue", &nPUtrue, &b_nPUtrue);
    fChain->SetBranchAddress("nPU", &nPU, &b_nPU);
-   
-   
-   
-   fChain->SetBranchAddress("nbQuarks", &nbQuarks, &b_nbQuarks);
-   fChain->SetBranchAddress("bQuark_pT", bQuark_pT, &b_bQuark_pT);
-   fChain->SetBranchAddress("bQuark_eta", bQuark_eta, &b_bQuark_eta);
-   fChain->SetBranchAddress("bQuark_phi", bQuark_phi, &b_bQuark_phi);
-   fChain->SetBranchAddress("bQuark_pdgID", bQuark_pdgID, &b_bQuark_pdgID);
-   fChain->SetBranchAddress("bQuark_status", bQuark_status, &b_bQuark_status);
-   fChain->SetBranchAddress("bQuark_fromGSP", bQuark_fromGSP, &b_bQuark_fromGSP);
-   
-   
-   
-   
-   
-   
    fChain->SetBranchAddress("nTrack", &nTrack, &b_nTrack);
    fChain->SetBranchAddress("Track_dxy", Track_dxy, &b_Track_dxy);
    fChain->SetBranchAddress("Track_dz", Track_dz, &b_Track_dz);
@@ -617,8 +558,8 @@ void HighPtStudy::Init(TTree *tree)
    fChain->SetBranchAddress("Jet_phi", Jet_phi, &b_Jet_phi);
    fChain->SetBranchAddress("Jet_ntracks", Jet_ntracks, &b_Jet_ntracks);
    fChain->SetBranchAddress("Jet_flavour", Jet_flavour, &b_Jet_flavour);
-   //fChain->SetBranchAddress("Jet_Ip1N", Jet_Ip1N, &b_Jet_Ip1N);
-   //fChain->SetBranchAddress("Jet_Ip1P", Jet_Ip1P, &b_Jet_Ip1P);
+   fChain->SetBranchAddress("Jet_Ip1N", Jet_Ip1N, &b_Jet_Ip1N);
+   fChain->SetBranchAddress("Jet_Ip1P", Jet_Ip1P, &b_Jet_Ip1P);
    fChain->SetBranchAddress("Jet_Ip2N", Jet_Ip2N, &b_Jet_Ip2N);
    fChain->SetBranchAddress("Jet_Ip2P", Jet_Ip2P, &b_Jet_Ip2P);
    fChain->SetBranchAddress("Jet_Ip3N", Jet_Ip3N, &b_Jet_Ip3N);
@@ -633,15 +574,15 @@ void HighPtStudy::Init(TTree *tree)
    fChain->SetBranchAddress("Jet_Svx", Jet_Svx, &b_Jet_Svx);
    fChain->SetBranchAddress("Jet_SvxNHP", Jet_SvxNHP, &b_Jet_SvxNHP);
    fChain->SetBranchAddress("Jet_SvxHP", Jet_SvxHP, &b_Jet_SvxHP);
-   //fChain->SetBranchAddress("Jet_SvxMass", Jet_SvxMass, &b_Jet_SvxMass);
+   fChain->SetBranchAddress("Jet_SvxMass", Jet_SvxMass, &b_Jet_SvxMass);
    fChain->SetBranchAddress("Jet_CombSvxN", Jet_CombSvxN, &b_Jet_CombSvxN);
    fChain->SetBranchAddress("Jet_CombSvxP", Jet_CombSvxP, &b_Jet_CombSvxP);
    fChain->SetBranchAddress("Jet_CombSvx", Jet_CombSvx, &b_Jet_CombSvx);
-   //fChain->SetBranchAddress("Jet_SimpIVF_HP", Jet_SimpIVF_HP, &b_Jet_SimpIVF_HP);
-   //fChain->SetBranchAddress("Jet_SimpIVF_HE", Jet_SimpIVF_HE, &b_Jet_SimpIVF_HE);
-   //fChain->SetBranchAddress("Jet_DoubIVF_HE", Jet_DoubIVF_HE, &b_Jet_DoubIVF_HE);
-   //fChain->SetBranchAddress("Jet_CombIVF", Jet_CombIVF, &b_Jet_CombIVF);
-   //fChain->SetBranchAddress("Jet_CombIVF_P", Jet_CombIVF_P, &b_Jet_CombIVF_P);
+   fChain->SetBranchAddress("Jet_SimpIVF_HP", Jet_SimpIVF_HP, &b_Jet_SimpIVF_HP);
+   fChain->SetBranchAddress("Jet_SimpIVF_HE", Jet_SimpIVF_HE, &b_Jet_SimpIVF_HE);
+   fChain->SetBranchAddress("Jet_DoubIVF_HE", Jet_DoubIVF_HE, &b_Jet_DoubIVF_HE);
+   fChain->SetBranchAddress("Jet_CombIVF", Jet_CombIVF, &b_Jet_CombIVF);
+   fChain->SetBranchAddress("Jet_CombIVF_P", Jet_CombIVF_P, &b_Jet_CombIVF_P);
    fChain->SetBranchAddress("Jet_SoftMuN", Jet_SoftMuN, &b_Jet_SoftMuN);
    fChain->SetBranchAddress("Jet_SoftMu", Jet_SoftMu, &b_Jet_SoftMu);
    fChain->SetBranchAddress("Jet_hist1", Jet_hist1, &b_Jet_hist1);
@@ -686,26 +627,21 @@ void HighPtStudy::Init(TTree *tree)
    fChain->SetBranchAddress("TrkInc_ptrel", &TrkInc_ptrel, &b_TrkInc_ptrel);
    fChain->SetBranchAddress("TrkInc_IPsig", &TrkInc_IPsig, &b_TrkInc_IPsig);
    fChain->SetBranchAddress("TrkInc_IP", &TrkInc_IP, &b_TrkInc_IP);
-   //fChain->SetBranchAddress("nCFromGSplit", &nCFromGSplit, &b_nCFromGSplit);
-   //fChain->SetBranchAddress("cFromGSplit_pT", cFromGSplit_pT, &b_cFromGSplit_pT);
-   //fChain->SetBranchAddress("cFromGSplit_eta", cFromGSplit_eta, &b_cFromGSplit_eta);
-   //fChain->SetBranchAddress("cFromGSplit_phi", cFromGSplit_phi, &b_cFromGSplit_phi);
-   //fChain->SetBranchAddress("nBFromGSplit", &nBFromGSplit, &b_nBFromGSplit);
-   //fChain->SetBranchAddress("bFromGSplit_pT", bFromGSplit_pT, &b_bFromGSplit_pT);
-   //fChain->SetBranchAddress("bFromGSplit_eta", bFromGSplit_eta, &b_bFromGSplit_eta);
-   //fChain->SetBranchAddress("bFromGSplit_phi", bFromGSplit_phi, &b_bFromGSplit_phi);
-   //fChain->SetBranchAddress("mcweight", &mcweight, &b_mcweight);
+   fChain->SetBranchAddress("nCFromGSplit", &nCFromGSplit, &b_nCFromGSplit);
+   fChain->SetBranchAddress("cFromGSplit_pT", cFromGSplit_pT, &b_cFromGSplit_pT);
+   fChain->SetBranchAddress("cFromGSplit_eta", cFromGSplit_eta, &b_cFromGSplit_eta);
+   fChain->SetBranchAddress("cFromGSplit_phi", cFromGSplit_phi, &b_cFromGSplit_phi);
+   fChain->SetBranchAddress("nBFromGSplit", &nBFromGSplit, &b_nBFromGSplit);
+   fChain->SetBranchAddress("bFromGSplit_pT", bFromGSplit_pT, &b_bFromGSplit_pT);
+   fChain->SetBranchAddress("bFromGSplit_eta", bFromGSplit_eta, &b_bFromGSplit_eta);
+   fChain->SetBranchAddress("bFromGSplit_phi", bFromGSplit_phi, &b_bFromGSplit_phi);
+   fChain->SetBranchAddress("mcweight", &mcweight, &b_mcweight);
    fChain->SetBranchAddress("nBHadrons", &nBHadrons, &b_nBHadrons);
    fChain->SetBranchAddress("BHadron_pT", BHadron_pT, &b_BHadron_pT);
    fChain->SetBranchAddress("BHadron_eta", BHadron_eta, &b_BHadron_eta);
    fChain->SetBranchAddress("BHadron_phi", BHadron_phi, &b_BHadron_phi);
    fChain->SetBranchAddress("BHadron_mass", BHadron_mass, &b_BHadron_mass);
    fChain->SetBranchAddress("BHadron_pdgID", BHadron_pdgID, &b_BHadron_pdgID);
-   fChain->SetBranchAddress("BHadron_SVx", BHadron_SVx, &b_BHadron_SVx);
-   fChain->SetBranchAddress("BHadron_SVy", BHadron_SVy, &b_BHadron_SVy);
-   
-   
-   
    Notify();
 }
 
