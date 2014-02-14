@@ -102,7 +102,7 @@ void JetProbaCalib::Loop()
 {
   double ptmax=10;
   
-  TFile* myfile = new TFile("calibeHistoWrite.root", "recreate");
+  TFile* myfile = new TFile("CalibrationFiles/calibeHistoWrite_NPix0.root", "recreate");
   myfile->cd();
   
   if (fChain == 0) return;
@@ -115,7 +115,7 @@ void JetProbaCalib::Loop()
   //Setup categories
   //----------------------------------
   CategoriesDefinition catDef;
-  std::vector<CategoryDef >  vectCategories =  catDef.CategoryList();
+  std::vector<CategoryDef >  vectCategories =  catDef.CategoryList_NPix0();
   
   
   
@@ -134,7 +134,7 @@ void JetProbaCalib::Loop()
     
     for (int ijet=0; ijet<nJet ; ijet++){
       
-      if (fabs(Jet_eta[ijet]) > 2.5 || Jet_pt[ijet]<20 ) continue;
+      if (fabs(Jet_eta[ijet]) > 2.5 || Jet_pt[ijet]<10 ) continue;
       for( int itrack=Jet_nFirstTrack[ijet]; itrack< Jet_nLastTrack[ijet]; itrack++){
         
         bool passSelection=passTrackSel(Track_nHitAll[itrack],Track_nHitPixel[itrack],Track_IP2D[itrack],Track_pt[itrack],Track_length[itrack],Track_chi2[itrack],Track_zIP[itrack],Track_dist[itrack],Track_eta[itrack],Jet_eta[ijet],Track_phi[itrack],Jet_phi[ijet],Jet_pt[ijet]);		
@@ -149,12 +149,12 @@ void JetProbaCalib::Loop()
         
         if(catnumb >= 0) vectCategories[catnumb].histo->Fill(-1*Track_IPsig[itrack]) ;
 	else{
-	  cout << "no category found for this track " << endl;
-	  cout << "Track_p[itrack]          " << Track_p[itrack] << endl;
-	  cout << "Track_eta[itrack]        " << Track_eta[itrack] << endl;
-	  cout << "Track_nHitAll[itrack]    " << Track_nHitAll[itrack] << endl;
-	  cout << "Track_nHitPixel[itrack]  " << Track_nHitPixel[itrack] << endl;
-	  cout << "Track_chi2[itrack]       " << Track_chi2[itrack] << endl;
+	  //cout << "no category found for this track " << endl;
+	  //cout << "Track_p[itrack]          " << Track_p[itrack] << endl;
+	  //cout << "Track_eta[itrack]        " << Track_eta[itrack] << endl;
+	  //cout << "Track_nHitAll[itrack]    " << Track_nHitAll[itrack] << endl;
+	  //cout << "Track_nHitPixel[itrack]  " << Track_nHitPixel[itrack] << endl;
+	  //cout << "Track_chi2[itrack]       " << Track_chi2[itrack] << endl;
 	}
 	
         

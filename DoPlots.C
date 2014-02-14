@@ -1679,7 +1679,7 @@ void DoPlots(){
   
   
   
-  //DoPlots_perf("JetProbaNew", "JetProbaNew","study_histo_stdcalib_highpT.root","study_histo_calibrTreeNoTrackSel.root");
+  DoPlots_perf("JetProba", "JetProbaNew","study_histo.root","study_histo.root");
   
   //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_trackPt_btracks_noGS_bjets", "jetPt_vs_trackPt_nonbtracks_noGS_bjets","study_histo.root", "Track p_{T} [GeV]");
   //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_DeltaRJet_btracks_noGS_bjets", "jetPt_vs_DeltaRJet_nonbtracks_noGS_bjets","study_histo.root", "#Delta R(track-jet)");
@@ -1691,7 +1691,7 @@ void DoPlots(){
   //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_dz_btracks_noGS_bjets",        "jetPt_vs_dz_nonbtracks_noGS_bjets",       "study_histo.root", "");
   //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_length_btracks_noGS_bjets",    "jetPt_vs_length_nonbtracks_noGS_bjets",   "study_histo.root", "");
   //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_dist_btracks_noGS_bjets",      "jetPt_vs_dist_nonbtracks_noGS_bjets",     "study_histo.root", "");
-  DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_nHitStrip_btracks_noGS_bjets", "jetPt_vs_nHitStrip_nonbtracks_noGS_bjets","study_histo.root", "");
+  //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_nHitStrip_btracks_noGS_bjets", "jetPt_vs_nHitStrip_nonbtracks_noGS_bjets","study_histo.root", "");
 
 }
 

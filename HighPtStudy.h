@@ -12,8 +12,12 @@
 #include <TChain.h>
 #include <TFile.h>
 
-#include "CategoryDef.h"
 #include "TLorentzVector.h"
+
+#include "CategoryDef/CategoryDef.h"
+#include "CategoryDef/CategoriesDefinition.h"
+#include "CategoryDef/CategoryDefCollection.h"
+
 
 // Header file for the classes stored in the TTree if any.
 
@@ -411,27 +415,30 @@ public :
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
-   virtual void     Loop(int cut, int type);
+   virtual void     Loop( const char*fileInPutName );
    //virtual void     plotLoop();
    //virtual void     plot1D(TString histo_name, int whatPlot);
    //virtual void     plot2D(TString histo_name);   
    virtual void     run();   
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
-   virtual std::vector<CategoryDef > DefCategories();
    
-   virtual bool     IsInCategory(float trkEta, float trkHTrk, float trkHPix, float trkp, float trkChi2, CategoryDef d);
-   virtual bool     passTrackSel(int trk, int pix, float ip2d, float pt, float len, float chi2, float zip, float dist, float eta, float etaJet, float phi, float phiJet, float ptJet);
+   
+  
+  
+  
+   virtual int                       IsInCategory(float trkEta, float trkHTrk, float trkHPix, float trkp, 
+   float trkChi2, std::vector<CategoryDef > d);
+    virtual double                    calculTrackProba( float ipsig, CategoryDef vectCat  );
+   virtual bool                      passTrackSel(int trk, int pix, float ip2d, float pt, float len, float chi2, float zip, float dist, float eta, float etaJet, float phi, float phiJet, float ptJet);
+
    
    virtual double                    jetProbability( std::vector<double>  v) ;
-   virtual std::vector<TH1D* >       GetCategories(const char* fileInPutName);
-   //virtual void                      ComputeProba(const char*fileInPutName);
    
    
    bool DeltaRTrackJetCut(double jetpT, double deltaR);
    bool TrackPtCut(double jetpT, double trackpt);
    
-   virtual double                    calculTrackProba(float p, float eta,int nhit, int npix, float chi,float ipsig,std::vector<TH1D*> vectHis, std::vector<TH1D*> vectTrkP,std::vector<CategoryDef> vectHisCat);
 
    double optimizedDeltaR(double jetpT);
    

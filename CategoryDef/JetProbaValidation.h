@@ -256,13 +256,13 @@ public :
    
    
    
-   virtual double                    jetProbability( std::vector<double>  v) ;
-   virtual int                       IsInCategory(float trkEta, float trkHTrk, float trkHPix, float trkp, 
+   virtual double jetProbability( std::vector<double>  v) ;
+   virtual int    IsInCategory(float trkEta, float trkHTrk, float trkHPix, float trkp, 
    float trkChi2, std::vector<CategoryDef > d);
-   virtual void                      ComputeProba(const char*fileInPutName);
-   virtual double                    calculTrackProba( float ipsig, CategoryDef vectCat  );
-   virtual bool                      passTrackSel(int trk, int pix, float ip2d, float pt, float len, float chi2, float zip, float dist, float eta, float etaJet, float phi, float phiJet, float ptJet);
-   virtual void                      plotPerf();
+   virtual void    ComputeProba(const char*fileInPutName);
+   virtual double  calculTrackProba( float ipsig, CategoryDef vectCat  );
+   virtual bool    passTrackSel(int trk, int pix, float ip2d, float pt, float len, float chi2, float zip, float dist, float eta, float etaJet, float phi, float phiJet, float ptJet);
+   virtual void    plotPerf();
 
 
 

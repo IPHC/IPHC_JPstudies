@@ -6,7 +6,6 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TH1.h>
-#include "CategoryDef.h"
 #include <vector>
 #include "TClass.h"
 #include "TMath.h"
@@ -48,36 +47,29 @@ bool doProbaTracks   = false;
 bool doNewTrackCalib = false;
 
 
-bool doDeltaRcut   = false;
+bool doDeltaRcut   = true;
 bool doBDTcut      = false;
 
 
-void HighPtStudy::Loop(int cut, int type)
+void HighPtStudy::Loop(const char*fileInPutName)
 {
   
+  
+    
+  cout << "initialize category files " << endl;
+  TFile* myinputfile = new TFile(fileInPutName );
+  CategoryDefCollection * pcatDefVector = (CategoryDefCollection*) myinputfile->Get("CategoryDefCollection");
+  
+  cout << "category files initialized" << endl;
+  if(pcatDefVector == 0) cout << "null pointer " << endl;
+  std::vector<CategoryDef > catDefList = pcatDefVector->ListOfCategory;
 
+  for(unsigned int i=0; i<catDefList.size(); i++){
   
+    catDefList[i].GetHistoFromFile(myinputfile );
   
-  TString next;
-  if(type==1)           next="_pt";
-  else if(type==0)      next="_DR";
-  else                  next="_IPsig";
-  TString str = ""; 
-  str += cut;
-  
-  //TFile * filechannel = new TFile("study_histo.root"  );
-  //TH1F * BDTcalib_ljets = (TH1F*)filechannel->Get( "BDToutput_ljets" );
- 
-  // Load track probabilities
-  
-  
-  std::vector<CategoryDef> vecthistoCatDef=DefCategories();
+  }
 
-  std::vector<TH1D*> vecthistoCatFile;
-  if(doNewTrackCalib)  vecthistoCatFile=GetCategories("calibeHistoWrite_highPTJets.root");
-  else                 vecthistoCatFile=GetCategories("calibeHistoWrite_highPTJets.root");
-  
-  
   
   TFile* myfile = new TFile("study_histo.root", "recreate");
   myfile->cd();
@@ -137,6 +129,8 @@ void HighPtStudy::Loop(int cut, int type)
   //initiate TMVA
   //*****************
   // This loads the library
+  
+  /*
   cout << "initiate TMVA " << endl;
   TMVA::Tools::Instance();
   cout << "create reader" << endl;
@@ -163,59 +157,11 @@ void HighPtStudy::Loop(int cut, int type)
   
   reader->BookMVA( "BDT", "weights/BDT_trainning_b_vs_nobtracks_BDT.weights.xml" ); 
   
-  
+  */
   std::vector<double > vectProba;
   std::vector<int > vectProba_idx;
   std::vector<int > vectTrack_type;
-   
-  int nbin_trkH=50;
-  float xmin_trkH=0.0;
-  float xmax_trkH=1.02;  
-  TH1D * trackPCat0  = new TH1D("trackPCat0",  "trackPCat0",   nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat1  = new TH1D("trackPCat1",  "trackPCat1",   nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat2  = new TH1D("trackPCat2",  "trackPCat2",   nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat3  = new TH1D("trackPCat3",  "trackPCat3",   nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat4  = new TH1D("trackPCat4",  "trackPCat4",   nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat5  = new TH1D("trackPCat5",  "trackPCat5",   nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat51 = new TH1D("trackPCat51", "trackPCat51",  nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat52 = new TH1D("trackPCat52", "trackPCat52",  nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat53 = new TH1D("trackPCat53", "trackPCat53",  nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat6  = new TH1D("trackPCat6",  "trackPCat6",   nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat7  = new TH1D("trackPCat7",  "trackPCat7",   nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat8  = new TH1D("trackPCat8",  "trackPCat8",   nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat9  = new TH1D("trackPCat9",  "trackPCat9",     nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat91  = new TH1D("trackPCat91",  "trackPCat91",     nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat92  = new TH1D("trackPCat92",  "trackPCat92",     nbin_trkH, xmin_trkH, xmax_trkH);
-  TH1D * trackPCat93  = new TH1D("trackPCat93",  "trackPCat93",     nbin_trkH, xmin_trkH, xmax_trkH);
-  //TH1D * trackPCat_all = new TH1D("trackPCat_all", "trackPCat_all", nbin_trkH, xmin_trkH, xmax_trkH);
  
-  
-  TH1D * trackNegPCat_all = new TH1D("trackNegPCat_all", "trackNegPCat_all", nbin_trkH, xmin_trkH, xmax_trkH);
-  std::vector<TH1D *> vectTrkProba; 
-   
-  vectTrkProba.push_back(trackPCat0);
-  vectTrkProba.push_back(trackPCat1);
-  vectTrkProba.push_back(trackPCat2);  
-  vectTrkProba.push_back(trackPCat3);  
-  vectTrkProba.push_back(trackPCat4); 
-  if(!doNewTrackCalib){ 
-    vectTrkProba.push_back(trackPCat5);
-  }else{
-    vectTrkProba.push_back(trackPCat51);
-    vectTrkProba.push_back(trackPCat52);
-    vectTrkProba.push_back(trackPCat53);
-  }  
-  vectTrkProba.push_back(trackPCat6);
-  vectTrkProba.push_back(trackPCat7);  
-  vectTrkProba.push_back(trackPCat8);
-  if(!doNewTrackCalib){   
-    vectTrkProba.push_back(trackPCat9); 
-  }else{
-    vectTrkProba.push_back(trackPCat91); 
-    vectTrkProba.push_back(trackPCat92); 
-    vectTrkProba.push_back(trackPCat93); 
-  }
-  //vectTrkProba.push_back(trackPCat_all);
   
   //************************************
   //for performance curves, efficiencies
@@ -233,10 +179,10 @@ void HighPtStudy::Loop(int cut, int type)
   TH1F * JetProbaNew2_cjets = new TH1F("JetProbaNew2_cjets", "JetProbaNew2_cjets", 500, 0, 5);
   TH1F * JetProbaNew2_ljets = new TH1F("JetProbaNew2_ljets", "JetProbaNew2_ljets", 500, 0, 5);
   
-  TH1F * BDToutput_btracks_bjets    = new TH1F("BDToutput_btracks_bjets", "BDToutput_btracks_bjets", 100, -1, 1);
-  TH1F * BDToutput_nonbtracks_bjets = new TH1F("BDToutputnonbtracks_bjets", "BDToutputnonbtracks_bjets", 100, -1, 1);
-  TH1F * BDToutput_cjets = new TH1F("BDToutput_cjets", "BDToutput_cjets", 100, -1, 1);
-  TH1F * BDToutput_ljets = new TH1F("BDToutput_ljets", "BDToutput_ljets", 100, -1, 1);
+  //TH1F * BDToutput_btracks_bjets    = new TH1F("BDToutput_btracks_bjets", "BDToutput_btracks_bjets", 100, -1, 1);
+  //TH1F * BDToutput_nonbtracks_bjets = new TH1F("BDToutputnonbtracks_bjets", "BDToutputnonbtracks_bjets", 100, -1, 1);
+  //TH1F * BDToutput_cjets = new TH1F("BDToutput_cjets", "BDToutput_cjets", 100, -1, 1);
+  //TH1F * BDToutput_ljets = new TH1F("BDToutput_ljets", "BDToutput_ljets", 100, -1, 1);
   
   //************************************************
   //for performance curves, efficiencies vs jet pT
@@ -315,7 +261,12 @@ void HighPtStudy::Loop(int cut, int type)
   TH3F * jetPt_vs_TrackPt_vs_JetProba_ljets = new TH3F("jetPt_vs_TrackPt_vs_JetProba_ljets", "jetPt_vs_TrackPt_vs_JetProba_ljets", 100, 0, 1000, 100, 0.0, 0.3, 100, 0, 500 );
   
   
-  
+  //************************************
+  //IPsign for NPixHit == 1
+  //************************************
+  TH1F * IPsign_NPixHit1_bjets = new TH1F("IPsign_NPixHit1_bjets", "IPsign_NPixHit1_bjets", 100, 0, 10);
+  TH1F * IPsign_NPixHit1_cjets = new TH1F("IPsign_NPixHit1_cjets", "IPsign_NPixHit1_cjets", 100, 0, 10);
+  TH1F * IPsign_NPixHit1_ljets = new TH1F("IPsign_NPixHit1_ljets", "IPsign_NPixHit1_ljets", 100, 0, 10);
   
   
   
@@ -360,7 +311,7 @@ void HighPtStudy::Loop(int cut, int type)
     if(jentry%10000 == 0) std::cout << "the processed event number is " << jentry << " over " << nentries << endl;
     
     
-    //if(jentry == 1000000) break;
+    //if(jentry == 10) break;
     
     if (30<pthat && pthat<50)   n30++;
     if (50<pthat && pthat<80)   n50++;
@@ -380,8 +331,8 @@ void HighPtStudy::Loop(int cut, int type)
     
     for (int ijet=0; ijet<nJet ; ijet++){
       
-      //if (Jet_pt[ijet]<200 || Jet_pt[ijet]> 300 || fabs(Jet_eta[ijet]) > 1.1) continue;
-      if (Jet_pt[ijet]<20 || fabs(Jet_eta[ijet]) > 1.1) continue;
+      //if (Jet_pt[ijet]<200 || Jet_pt[ijet]> 300 || fabs(Jet_eta[ijet]) > 1.6) continue;
+      if (Jet_pt[ijet]<20 || fabs(Jet_eta[ijet]) > 1.6) continue;
       
       //if(fabs(Jet_flavour[ijet]) != 5) continue; 
       TLorentzVector jet;
@@ -501,6 +452,8 @@ void HighPtStudy::Loop(int cut, int type)
       //****************************
       
       std::vector<double > proba_tmp;
+      
+      
       if(doDeltaRcut && !doProbaTracks){
         double deltaROpt = optimizedDeltaR(Jet_pt[ijet]);hdeltaROpt->Fill(deltaROpt);
         for( int jtrack=Jet_nFirstTrack[ijet]; jtrack< Jet_nLastTrack[ijet]; jtrack++){
@@ -514,6 +467,9 @@ void HighPtStudy::Loop(int cut, int type)
 	  TLorentzVector thetrack;
           thetrack.SetPtEtaPhiM(Track_pt[jtrack], Track_eta[jtrack], Track_phi[jtrack], 0);
           
+	  if(fabs(Jet_flavour[ijet]) == 5 && !isGluonSplit) IPsign_NPixHit1_bjets->Fill(Track_IPsig[jtrack]);
+	  if(fabs(Jet_flavour[ijet]) == 4                 ) IPsign_NPixHit1_cjets->Fill(Track_IPsig[jtrack]);
+	  if(fabs(Jet_flavour[ijet]) <  4                 ) IPsign_NPixHit1_ljets->Fill(Track_IPsig[jtrack]);
         
           if(jet.DeltaR(thetrack) < deltaROpt){ 
             proba_tmp.push_back(Track_Proba[jtrack]);
@@ -524,15 +480,33 @@ void HighPtStudy::Loop(int cut, int type)
         for( int itrack=Jet_nFirstTrack[ijet]; itrack< Jet_nLastTrack[ijet]; itrack++){	
 	
 	  bool isSelectedTracks = passTrackSel(Track_nHitAll[itrack],Track_nHitPixel[itrack],Track_IP2D[itrack],Track_pt[itrack],Track_length[itrack],Track_chi2[itrack],Track_zIP[itrack],Track_dist[itrack],Track_eta[itrack],Jet_eta[ijet],Track_phi[itrack],Jet_phi[ijet],Jet_pt[ijet]);
-	  if(!isSelectedTracks) continue;
-	
-	  double proba=calculTrackProba(Track_p[itrack],Track_eta[itrack],Track_nHitAll[itrack],Track_nHitPixel[itrack],Track_chi2[itrack],Track_IPsig[itrack],vecthistoCatFile, vectTrkProba, vecthistoCatDef);	
-	  proba_tmp.push_back(proba);
+
+	 if(!isSelectedTracks) continue;
+	  
+	  int catnum =-1;
+	  
+	  double proba=-1000;
+	  catnum = IsInCategory(Track_eta[itrack],  Track_nHitAll[itrack] , Track_nHitPixel[itrack], Track_p[itrack] 
+	  , Track_chi2[itrack], catDefList);
+
+	   if(catnum >=0) {
+	    proba=calculTrackProba( Track_IPsig[itrack], catDefList[catnum]); 	  
+	    proba_tmp.push_back(proba);	
+	   }else{
+	    /*cout << "no category found for this track " <<  endl;
+	    cout << "Track_p[itrack]		  " << Track_p[itrack]    << endl;
+	    cout << "Track_eta[itrack]  	  " << Track_eta[itrack]  << endl;
+	    cout << "Track_chi2[itrack] 	  " << Track_chi2[itrack] << endl;
+	    cout << "Track_nHitPixel[itrack]	  " << Track_nHitPixel[itrack]<< endl;
+	    cout << "Track_nHitAll[itrack]	  " << Track_nHitAll[itrack]  << endl;	  */  
+	  }
+	  
 	}
       }
       
       
       double jetP_tmp = 0;
+      
       if(proba_tmp.size() !=0) jetP_tmp = jetProbability( proba_tmp );
       
       if(fabs(Jet_flavour[ijet]) == 5 && !isGluonSplit){
@@ -652,8 +626,8 @@ void HighPtStudy::Loop(int cut, int type)
            nHitStrip = Track_nHitStrip[itrack];
 	   trackProba= Track_Proba[itrack];
 	   theouttree_btracks->Fill(); 
-	   BDToutput[itrack] = reader->EvaluateMVA( "BDT");
-	   BDToutput_btracks_bjets->Fill(BDToutput[itrack]);   
+	   //BDToutput[itrack] = reader->EvaluateMVA( "BDT");
+	   //BDToutput_btracks_bjets->Fill(BDToutput[itrack]);   
 	 }
          else{
 	 
@@ -683,11 +657,11 @@ void HighPtStudy::Loop(int cut, int type)
            nHitStrip = Track_nHitStrip[itrack];
 	   trackProba= Track_Proba[itrack];
    	   
-	   theouttree_nonbtracks->Fill(); 
-	   BDToutput[itrack] = reader->EvaluateMVA( "BDT");
-           if(abs(Jet_flavour[ijet]) == 5 ) BDToutput_nonbtracks_bjets->Fill(BDToutput[itrack]); 
-           if(abs(Jet_flavour[ijet]) == 4 ) BDToutput_cjets->Fill(BDToutput[itrack]); 
-           if(abs(Jet_flavour[ijet]) != 4  && abs(Jet_flavour[ijet]) != 5)BDToutput_ljets->Fill(BDToutput[itrack]); 
+	   //theouttree_nonbtracks->Fill(); 
+	   //BDToutput[itrack] = reader->EvaluateMVA( "BDT");
+           //if(abs(Jet_flavour[ijet]) == 5 ) BDToutput_nonbtracks_bjets->Fill(BDToutput[itrack]); 
+           //if(abs(Jet_flavour[ijet]) == 4 ) BDToutput_cjets->Fill(BDToutput[itrack]); 
+           //if(abs(Jet_flavour[ijet]) != 4  && abs(Jet_flavour[ijet]) != 5)BDToutput_ljets->Fill(BDToutput[itrack]); 
 	 }
         } //end loops on tracks
 	
@@ -756,337 +730,23 @@ void HighPtStudy::run(){
   
 }
 
-std::vector<CategoryDef > HighPtStudy::DefCategories()
-{  
-   
- 
-  
-    std::vector<CategoryDef >  vectCat;
-  
-  vectCat.clear();
-  
-  int nbins=10000;
-  double xmin=0.0;
-  double xmax=20.0;
-  
-  CategoryDef cat0;  
-  CategoryDef cat1;
-  CategoryDef cat2;
-  CategoryDef cat3;
-  CategoryDef cat4;
-  CategoryDef cat5;
-  CategoryDef cat51;
-  CategoryDef cat52;
-  CategoryDef cat53;
-  CategoryDef cat6;
-  CategoryDef cat7;
-  CategoryDef cat8;
-  CategoryDef cat9;
-  CategoryDef cat91;
-  CategoryDef cat92;
-  CategoryDef cat93;
-
-  //categorie definitions:
-  //cat 0  
-  cat0.etaMax        = 2.5;
-  cat0.etaMin        = 0;
-  cat0.nHitsMax      = 50;
-  cat0.nHitsMin      = 8;
-  cat0.nPixelHitsMax = 1;
-  cat0.nPixelHitsMin = 1;
-  cat0.pMax          = 5000;
-  cat0.pMin          = 0;
-  cat0.chiMin        = 0;
-  cat0.chiMax        = 5;
-  cat0.withFirstPixelHit = 0;  
-  cat0.histoCalib    = new TH1D("histoCat0"	  ,"histoCat0"	,nbins,xmin,xmax);
-  
-  
-  //cat 1
-  cat1.etaMax	     = 2.5;
-  cat1.etaMin	     = 0;
-  cat1.nHitsMax      = 50;
-  cat1.nHitsMin      = 8;
-  cat1.nPixelHitsMax = 8;
-  cat1.nPixelHitsMin = 3;
-  cat1.pMax	     = 5000;
-  cat1.pMin	     = 0;
-  cat1.chiMin	     = 2.5;
-  cat1.chiMax	     = 5;
-  cat1.withFirstPixelHit  = 0;
-  cat1.histoCalib    = new TH1D("histoCat11"	 ,"histoCat11" ,nbins,xmin,xmax);  
-  
-    
-  //cat 2
-  cat2.etaMax        = 0.8;
-  cat2.etaMin        = 0;
-  cat2.nHitsMax      = 50;
-  cat2.nHitsMin      = 8;
-  cat2.nPixelHitsMax = 8;
-  cat2.nPixelHitsMin = 3;
-  cat2.pMax          = 8;
-  cat2.pMin          = 0;
-  cat2.chiMin        = 0;
-  cat2.chiMax        = 2.5;
-  cat2.withFirstPixelHit  = 0;
-  cat2.histoCalib     = new TH1D("histoCat2"	  ,"histoCat2"	,nbins,xmin,xmax);
-
-
-  //cat 3
-  cat3.etaMax        = 1.6;
-  cat3.etaMin        = 0.8;
-  cat3.nHitsMax      = 50;
-  cat3.nHitsMin      = 8;
-  cat3.nPixelHitsMax = 8;
-  cat3.nPixelHitsMin = 3;
-  cat3.pMax          = 8;
-  cat3.pMin          = 0;
-  cat3.chiMin        = 0;
-  cat3.chiMax        = 2.5;  
-  cat3.withFirstPixelHit  = 0;
-  cat3.histoCalib    = new TH1D("histoCat3"	  ,"histoCat3"	,nbins,xmin,xmax);
-
-
-
-  //cat 4
-  cat4.etaMax        = 2.5;
-  cat4.etaMin        = 1.6;
-  cat4.nHitsMax      = 50;
-  cat4.nHitsMin      = 8;
-  cat4.nPixelHitsMax = 8;
-  cat4.nPixelHitsMin = 3;
-  cat4.pMax          = 8;
-  cat4.pMin          = 0;
-  cat4.chiMin        = 0;
-  cat4.chiMax        = 2.5;  
-  cat4.withFirstPixelHit  = 0;
-  cat4.histoCalib    = new TH1D("histoCat4"	  ,"histoCat4"	,nbins,xmin,xmax);
-  
-  
-  //cat 5
-  cat5.etaMax	     = 2.5;
-  cat5.etaMin	     = 0;
-  cat5.nHitsMax      = 50;
-  cat5.nHitsMin      = 8;
-  cat5.nPixelHitsMax = 2;
-  cat5.nPixelHitsMin = 2;
-  cat5.pMax	     = 8;
-  cat5.pMin	     = 0;
-  cat5.chiMin	     = 0;
-  cat5.chiMax	     = 2.5;  
-  cat5.withFirstPixelHit  = 0;
-  cat5.histoCalib    = new TH1D("histoCat51"	 ,"histoCat51" ,nbins,xmin,xmax);
-
-
-
-  //cat 5
-  cat51.etaMax        = 0.8;
-  cat51.etaMin        = 0;
-  cat51.nHitsMax      = 50;
-  cat51.nHitsMin      = 8;
-  cat51.nPixelHitsMax = 2;
-  cat51.nPixelHitsMin = 2;
-  cat51.pMax          = 8;
-  cat51.pMin          = 0;
-  cat51.chiMin        = 0;
-  cat51.chiMax        = 2.5;  
-  cat51.withFirstPixelHit  = 0;
-  cat51.histoCalib    = new TH1D("histoCat51"	  ,"histoCat51"	,nbins,xmin,xmax);
-
-
-  //cat 5
-  cat52.etaMax        = 1.6;
-  cat52.etaMin        = 0.8;
-  cat52.nHitsMax      = 50;
-  cat52.nHitsMin      = 8;
-  cat52.nPixelHitsMax = 2;
-  cat52.nPixelHitsMin = 2;
-  cat52.pMax          = 8;
-  cat52.pMin          = 0;
-  cat52.chiMin        = 0;
-  cat52.chiMax        = 2.5;  
-  cat52.withFirstPixelHit  = 0;
-  cat52.histoCalib    = new TH1D("histoCat52"	  ,"histoCat52"	,nbins,xmin,xmax);
-
-
-  //cat 5
-  cat53.etaMax        = 2.6;
-  cat53.etaMin        = 1.5;
-  cat53.nHitsMax      = 50;
-  cat53.nHitsMin      = 8;
-  cat53.nPixelHitsMax = 2;
-  cat53.nPixelHitsMin = 2;
-  cat53.pMax          = 8;
-  cat53.pMin          = 0;
-  cat53.chiMin        = 0;
-  cat53.chiMax        = 2.5;  
-  cat53.withFirstPixelHit  = 0;
-  cat53.histoCalib    = new TH1D("histoCat5"	  ,"histoCat5"	,nbins,xmin,xmax);
-
-
-
-  //cat 6
-  cat6.etaMax        = 0.8;
-  cat6.etaMin        = 0;
-  cat6.nHitsMax      = 50;
-  cat6.nHitsMin      = 8;
-  cat6.nPixelHitsMax = 8;
-  cat6.nPixelHitsMin = 3;
-  cat6.pMax          = 5000;
-  cat6.pMin          = 8;
-  cat6.chiMin        = 0;
-  cat6.chiMax        = 2.5;  
-  cat6.withFirstPixelHit  = 0;
-  cat6.histoCalib    = new TH1D("histoCat6"	  ,"histoCat6"	,nbins,xmin,xmax);
-
-
-  //cat 7
-  cat7.etaMax        = 1.6;
-  cat7.etaMin        = 0.8;
-  cat7.nHitsMax      = 50;
-  cat7.nHitsMin      = 8;
-  cat7.nPixelHitsMax = 8;
-  cat7.nPixelHitsMin = 3;
-  cat7.pMax          = 5000;
-  cat7.pMin          = 8;
-  cat7.chiMin        = 0;
-  cat7.chiMax        = 2.5;  
-  cat7.withFirstPixelHit  = 0;
-  cat7.histoCalib    = new TH1D("histoCat7"	  ,"histoCat7"	,nbins,xmin,xmax);
-
-  //cat 8
-  cat8.etaMax        = 2.5;
-  cat8.etaMin        = 1.6;
-  cat8.nHitsMax      = 50;
-  cat8.nHitsMin      = 8;
-  cat8.nPixelHitsMax = 8;
-  cat8.nPixelHitsMin = 3;
-  cat8.pMax          = 5000;
-  cat8.pMin          = 8;
-  cat8.chiMin        = 0;
-  cat8.chiMax        = 2.5;  
-  cat8.withFirstPixelHit  = 0;
-  cat8.histoCalib    = new TH1D("histoCat8"	  ,"histoCat8"	,nbins,xmin,xmax);
-  
-  //cat 9
-  cat9.etaMax	     = 2.5;
-  cat9.etaMin	     = 0;
-  cat9.nHitsMax      = 50;
-  cat9.nHitsMin      = 8;
-  cat9.nPixelHitsMax = 2;
-  cat9.nPixelHitsMin = 2;
-  cat9.pMax	     = 5000;
-  cat9.pMin	     = 8;
-  cat9.chiMin	     = 0;
-  cat9.chiMax	     = 2.5;  
-  cat9.withFirstPixelHit  = 0;
-  cat9.histoCalib    = new TH1D("histoCat9"	 ,"histoCat9" ,nbins,xmin,xmax);
-
-  //cat 9
-  cat91.etaMax        = 0.8;
-  cat91.etaMin        = 0;
-  cat91.nHitsMax      = 50;
-  cat91.nHitsMin      = 8;
-  cat91.nPixelHitsMax = 2;
-  cat91.nPixelHitsMin = 2;
-  cat91.pMax          = 5000;
-  cat91.pMin          = 8;
-  cat91.chiMin        = 0;
-  cat91.chiMax        = 2.5;  
-  cat91.withFirstPixelHit  = 0;
-  cat91.histoCalib    = new TH1D("histoCat91"	  ,"histoCat91"	,nbins,xmin,xmax);
-  
-  //cat 9
-  cat92.etaMax        = 1.6;
-  cat92.etaMin        = 0.8;
-  cat92.nHitsMax      = 50;
-  cat92.nHitsMin      = 8;
-  cat92.nPixelHitsMax = 2;
-  cat92.nPixelHitsMin = 2;
-  cat92.pMax          = 5000;
-  cat92.pMin          = 8;
-  cat92.chiMin        = 0;
-  cat92.chiMax        = 2.5;  
-  cat92.withFirstPixelHit  = 0;
-  cat92.histoCalib    = new TH1D("histoCat92"	  ,"histoCat92"	,nbins,xmin,xmax);
-  
-  
-  
-  //cat 9
-  cat93.etaMax        = 2.5;
-  cat93.etaMin        = 1.6;
-  cat93.nHitsMax      = 50;
-  cat93.nHitsMin      = 8;
-  cat93.nPixelHitsMax = 2;
-  cat93.nPixelHitsMin = 2;
-  cat93.pMax          = 5000;
-  cat93.pMin          = 8;
-  cat93.chiMin        = 0;
-  cat93.chiMax        = 2.5;  
-  cat93.withFirstPixelHit  = 0;
-  cat93.histoCalib    = new TH1D("histoCat93"	  ,"histoCat93"	,nbins,xmin,xmax);
-  
-  
-  
-  
-  
-  vectCat.push_back(cat0);
-  vectCat.push_back(cat1);
-  vectCat.push_back(cat2);
-  vectCat.push_back(cat3);
-  vectCat.push_back(cat4);
-  if(!doNewTrackCalib){
-    vectCat.push_back(cat5);
-  }else{
-    vectCat.push_back(cat51);
-    vectCat.push_back(cat52);
-    vectCat.push_back(cat53);
-  }
-  vectCat.push_back(cat6);
-  vectCat.push_back(cat7);
-  vectCat.push_back(cat8);
-  if(!doNewTrackCalib){
-    vectCat.push_back(cat9);
-  }else{
-    vectCat.push_back(cat91);
-    vectCat.push_back(cat92);
-    vectCat.push_back(cat93);
-  }
- 
-   
-  //number_of_category=vectCat.size();
-  
-  return vectCat; 
-  
-  
-  
-  
-  
-  
-  
-}
-
 
 //-----------------------------------------------------Find the category of a given track----------------------------------------------------------------------------------------//
-bool HighPtStudy::IsInCategory(float trkEta, float trkHTrk, float trkHPix, float trkp, float trkChi2, CategoryDef d){
+int HighPtStudy::IsInCategory(float trkEta, float trkHTrk, float trkHPix, float trkp, float trkChi2, std::vector<CategoryDef > d){
   
-  bool isIn=false;
+  int isIn=-1;
   
-  if (fabs(trkEta)>d.etaMin
-      &&fabs(trkEta)<d.etaMax
-      &&trkHTrk<=d.nHitsMax
-      &&trkHTrk>=d.nHitsMin
-      &&trkHPix<=d.nPixelHitsMax
-      &&trkHPix>=d.nPixelHitsMin
-      &&trkp<d.pMax
-      &&trkp>d.pMin
-      &&trkChi2>=d.chiMin
-      &&trkChi2<=d.chiMax) isIn=true;
+  for(unsigned int i=0; i<d.size(); i++){
+   if (fabs(trkEta)>d[i].etaMin&&fabs(trkEta)<d[i].etaMax&&trkHTrk<=d[i].nHitsMax&&trkHTrk>=d[i].nHitsMin&&
+     trkHPix<=d[i].nPixelHitsMax&&trkHPix>=d[i].nPixelHitsMin&&trkp<d[i].pMax&&trkp>d[i].pMin&&
+     trkChi2>=d[i].chiMin&&trkChi2<=d[i].chiMax) isIn=i;
+  }
+  
+  
   
   return isIn;
   
 }
-
 
 //-----------------------------------------------------Return true if track passes btag selection ---------------------------------------------------------------------------------//
 bool HighPtStudy::passTrackSel(int trk, int pix, float ip2d, float pt, float len, float chi2, float zip, float dist, float eta, float etaJet, float phi, float phiJet, float ptJet)
@@ -1121,15 +781,9 @@ bool HighPtStudy::passTrackSel(int trk, int pix, float ip2d, float pt, float len
   if (fabs(dist)<0.07)passDist=true;
   if (fabs(zip)<17.0) passZip=true;
   if (deltaR<0.3)     passDR=true;
-
-
-  
-  //if (passTrk&&passIP&&passPix&&passPt&&passLen&&passChi2&&passDist&&passZip&&passDR) {
-  
+  if (passTrk&&passIP&&passPix&&passPt&&passLen&&passChi2&&passDist&&passZip&&passDR) {
     passSel=true;
-
-  
-  //}
+  }
   
   return passSel;
   
@@ -1160,7 +814,7 @@ bool HighPtStudy::DeltaRTrackJetCut(double jetpT, double deltaR){
 
 bool HighPtStudy::TrackPtCut(double jetpT, double trackpt){
   
-  
+  jetpT;
   double trackpT_vs_jetpt = 10000;
   if(trackpt < trackpT_vs_jetpt) return true;
   else return false;
@@ -1170,128 +824,52 @@ bool HighPtStudy::TrackPtCut(double jetpT, double trackpt){
   
 }
 
-std::vector<TH1D* > HighPtStudy::GetCategories(const char* fileInPutName){
-  
-  
-  TFile * myInputFile = new TFile(fileInPutName);
-  myInputFile->cd();
-  myInputFile->ls();
-  std::vector<TH1D* >  vectH;
-  vectH.clear();
-  
-  int imax = 10;
-  if(doNewTrackCalib) imax = 14;
-  
-  for(int i = 0; i < imax; i++){
-    
-    TH1D* histo ;
-    if(doNewTrackCalib){
-      if(i == 0) histo= (TH1D*)gROOT->FindObject("histoCat0"); 
-      if(i == 1) histo= (TH1D*)gROOT->FindObject("histoCat1"); 
-      if(i == 2) histo= (TH1D*)gROOT->FindObject("histoCat2"); 
-      if(i == 3) histo= (TH1D*)gROOT->FindObject("histoCat3"); 
-      if(i == 4) histo= (TH1D*)gROOT->FindObject("histoCat4"); 
-      if(i == 5) histo= (TH1D*)gROOT->FindObject("histoCat51"); 
-      if(i == 6) histo= (TH1D*)gROOT->FindObject("histoCat52");
-      if(i == 7) histo= (TH1D*)gROOT->FindObject("histoCat53");
-      if(i == 8) histo= (TH1D*)gROOT->FindObject("histoCat6"); 
-      if(i == 9) histo= (TH1D*)gROOT->FindObject("histoCat7"); 
-      if(i == 10) histo= (TH1D*)gROOT->FindObject("histoCat8"); 
-      if(i == 11) histo= (TH1D*)gROOT->FindObject("histoCat91"); 
-      if(i == 12) histo= (TH1D*)gROOT->FindObject("histoCat92"); 
-      if(i == 13) histo= (TH1D*)gROOT->FindObject("histoCat93"); 
-      if(i > 40) cout << "WARNING !!! max number of category  == 40 !!! " << endl;
-      if(!histo) cout << "WARNING Histo for cat " << i << " is not existing " << endl;
-      if(histo)  vectH.push_back(histo);
-    }else{
-     
-      if(i == 0) histo= (TH1D*)gROOT->FindObject("histoCat0"); 
-      if(i == 1) histo= (TH1D*)gROOT->FindObject("histoCat1"); 
-      if(i == 2) histo= (TH1D*)gROOT->FindObject("histoCat2"); 
-      if(i == 3) histo= (TH1D*)gROOT->FindObject("histoCat3"); 
-      if(i == 4) histo= (TH1D*)gROOT->FindObject("histoCat4"); 
-      if(i == 5) histo= (TH1D*)gROOT->FindObject("histoCat5"); 
-      if(i == 6) histo= (TH1D*)gROOT->FindObject("histoCat6"); 
-      if(i == 7) histo= (TH1D*)gROOT->FindObject("histoCat7"); 
-      if(i == 8) histo= (TH1D*)gROOT->FindObject("histoCat8"); 
-      if(i == 9) histo= (TH1D*)gROOT->FindObject("histoCat9"); 
-      if(i > 40) cout << "WARNING !!! max number of category  == 40 !!! " << endl;
-      if(!histo) cout << "WARNING Histo for cat " << i << " is not existing " << endl;
-      if(histo)  vectH.push_back(histo);
-    }
-    
-    
-  }
-  
-  return vectH;
-  
-}
-  
-  
-  
-  
-//-----------------------------------------------------Compute the probability that a track comes from PV ---------------------------------------------------------------------------//
-double HighPtStudy::calculTrackProba(float p, float eta,int nhit, int npix, float chi,float ipsig, 
-   std::vector<TH1D*> vectHis, std::vector<TH1D*> vectTrkP,std::vector<CategoryDef> vectHisCat){
- //cout << "in track proba " << endl;
- int  nbins=10000;
- int  xmin=0.0;
- int  xmax=20.0;
-   
-  bool foundCat = false;
-  TH1D * myHisto;
-  TH1D * myHistoTrk;
-  //cout << "vectHisCat.size() " << vectHisCat.size() << endl;
-  //cout << "vectHis.size() "    << vectHis.size()    << endl;
-  //cout << "vectTrkP.size() "   << vectTrkP.size()   << endl;
-  
-  
-   for(unsigned int i=0; i< vectHisCat.size(); i++){
-    //cout << vectD[i].histo << endl;
-    if(IsInCategory(eta,nhit ,npix ,p, chi, vectHisCat[i])) {
-      foundCat = true;
-      myHisto = vectHis[i];
-      myHistoTrk= vectTrkP[i];
-    }
-  }
-  //cout << "found categories " << endl;
-  double proba= -1000.0;
-  double histoIntegral = 1.0;
-  if( foundCat == true){
-    int nbin = int(fabs(ipsig)*(nbins+1)/xmax);
-    double sum=0.0;
-    for(int i=nbin; i<=(nbins) ; i++){
-     double x=myHisto->GetBinContent(i);
-     sum=sum+x;
-   }
-  
-   double sum_tot=0.0;
-   for(int i=1; i<=(nbins) ; i++){
-     double x=myHisto->GetBinContent(i);
-     sum_tot=sum_tot+x;
-   }    
-   proba=sum/sum_tot;
-   if (ipsig < 0) proba=-proba;
-   myHistoTrk->Fill(fabs(proba));
-   //vectTrkP[10]->Fill(fabs(proba));
-  
-  }
-  else {
-    proba = -100.0; 
-    //cout << "no category found !! " << endl;
-    //cout <<  "p    " <<  p << endl;
-    //cout <<  "eta  " <<  eta << endl;
-    //cout <<  "nhit " <<  nhit << endl;
-    //cout <<  "npix "  <<  npix << endl;
-    //cout <<  "chi  " <<  chi << endl;
-    }	
-     //cout << "end track proba " << endl;
 
+
+//-----------------------------------------------------Compute the probability that a track comes from PV ---------------------------------------------------------------------------//
+double HighPtStudy::calculTrackProba( float ipsig, CategoryDef theCat){
+
+   
+  //int catnum = IsInCategory(eta,nhit ,npix ,p, chi, vectCat);
+  
+  
+  double proba= -1000.0;
+  
+  TH1D * thecathisto = theCat.histo;
+  
+  double nbins=thecathisto->GetNbinsX();
+  //double xmin =thecathisto->GetXaxis()->GetXmin();
+  double xmax =thecathisto->GetXaxis()->GetXmax();
+  
+  int nbin = int(fabs(ipsig)*(nbins+1)/xmax);
+  
+  
+  
+  double sum=0.0;
+  for(int i=nbin; i<=(nbins) ; i++){
+    double x=thecathisto->GetBinContent(i);
+    sum=sum+x;
+  }
+  
+  double sum_tot=0.0;
+  for(int i=1; i<=(nbins) ; i++){
+    //double x=myHisto->GetBinContent(i);
+    double x=thecathisto->GetBinContent(i);
+    sum_tot=sum_tot+x;
+  }    
+  
+  proba=sum/sum_tot;
+  if (ipsig < 0) proba=-proba;
+  
+  
+  //if(proba < 0.00001)   cout << "found a proba of " << proba << "  ip/sigma "  << ipsig << "  xmax " << xmax << endl;
   return proba;
   
   
   
 }
+
+
 
 
 double HighPtStudy::jetProbability( std::vector<double>  v) 
@@ -1356,7 +934,7 @@ double HighPtStudy::jetProbability( std::vector<double>  v)
 double HighPtStudy::optimizedDeltaR(double jetpT){
 
   double deltaR = 0.3;
-  
+  jetpT;
   //if(jetpT>20 && jetpT <130) deltaR = exp(-0.91-0.01*jetpT);
   //if(jetpT>130) deltaR = 0.122 - 1.96581e-04*jetpT+ 1.22916e-07*jetpT*jetpT;
   
