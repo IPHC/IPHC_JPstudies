@@ -4,13 +4,13 @@
  gROOT->Reset() ; 
  
  
- gROOT->ProcessLine(".L CategoryDef/CategoryDef.C++");
+ //gROOT->ProcessLine(".L CategoryDef/CategoryDef.C++");
  gSystem->Load("CategoryDef/CategoryDef_C.so");
 
- gROOT->ProcessLine(".L CategoryDef/CategoryDefCollection.C++");
+ //gROOT->ProcessLine(".L CategoryDef/CategoryDefCollection.C++");
  gSystem->Load("CategoryDef/CategoryDefCollection_C.so");
 
- gROOT->ProcessLine(".L CategoryDef/CategoriesDefinition.C++");
+ //gROOT->ProcessLine(".L CategoryDef/CategoriesDefinition.C++");
  gSystem->Load("CategoryDef/CategoriesDefinition_C.so");
 
  
@@ -45,13 +45,13 @@
  //c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_30to50Summer12/*.root");
  //c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_120to170Summer12/*.root");
  
- c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_170to300Summer12/*.root");
- /*c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_300to470Summer12/*.root");
+ /*c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_170to300Summer12/*.root");
+ c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_300to470Summer12/*.root");
  c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_470to600Summer12/*.root");
  c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_600to800Summer12/*.root");
- c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_800to1000Summer12 /*.root");*/
- 
- //c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_80to120Summer12/*.root");
+ c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_800to1000Summer12/*.root");
+ */
+ c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_80to120Summer12/*.root");
  //c.Add("/opt/sbg/data/data2/cms/cbeluffi/Btag_HpT/CMSSW_5_3_11/src/RecoBTag/PerformanceMeasurements/test/QCD_50to80Summer12/*.root");
  
  //samples without track selection
@@ -59,13 +59,13 @@
  //c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd30/*.root");  
  //c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd50/*.root");   
  //c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd80/*.root"); 
- //c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd120/*.root");    
- /*c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd170/*.root");        
+ /*c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd120/*.root");   
+ c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd170/*.root");       
  c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd300/*.root");    
  c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd470/*.root");    
  c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd600/*.root");    
- c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd800/*.root");  */
- //c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd1000/*.root");   
+ c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd800/*.root");  
+ c.Add("/opt/sbg/cms/ui6_data1/ccollard/sl6/prod_trackhist/AllTracks/qcd1000/*.root"); */  
  
  
  cout << "construct HighPtStudy " << endl;
@@ -78,7 +78,7 @@
  // type == 1  is pT
  // type esle is IP_sig
  
- theanalyzer->Loop("CategoryDef/CalibrationFiles/calibeHistoWrite.root");
+ theanalyzer->Loop("CategoryDef/CalibrationFiles/calibeHistoWrite_std.root");
  
  
  

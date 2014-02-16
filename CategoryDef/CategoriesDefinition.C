@@ -15,7 +15,7 @@ std::vector<CategoryDef > CategoriesDefinition::CategoryList(){
 
   double nbins=10000;
   double xmin=0.0;
-  double xmax=20.0;
+  double xmax=50.0;
   
   
   CategoryDef cat0;
@@ -210,9 +210,9 @@ std::vector<CategoryDef > CategoriesDefinition::CategoryList(){
   return vectCategories;
 }
 
+/*
 
-
-std::vector<CategoryDef > CategoriesDefinition::CategoryList_NPix0(){
+std::vector<CategoryDef > CategoriesDefinition::CategoryList(){
 
   std::vector<CategoryDef > vectCategories;
 
@@ -429,3 +429,4 @@ std::vector<CategoryDef > CategoriesDefinition::CategoryList_NPix0(){
   return vectCategories;
 }
 
+*/

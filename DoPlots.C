@@ -1397,7 +1397,7 @@ void DoPlots_TrackSelOptJetProba(TString histoname, TString filename){
 
 
 //---------------------------------------------------------------------
-// plot of IP/sigma for different jet pT range
+// Compare b-tracks vs non-tracks  for different jet pT range
 //---------------------------------------------------------------------
 
 void DoPlots_comp_Btracks_vs_NonBTrack(TString histoname1, TString histoname2, TString filename, TString xlabel){
@@ -1615,6 +1615,223 @@ void DoPlots_comp_Btracks_vs_NonBTrack(TString histoname1, TString histoname2, T
 
 
 
+//---------------------------------------------------------------------
+// Compare b-tracks vs non-tracks  for different jet pT range
+//---------------------------------------------------------------------
+
+void DoPlots_IPsign_vs_other(TString histoname1, TString histoname2, TString filename, TString xlabel){
+
+  // Change for log plots:
+  gStyle->SetOptLogx(0);
+  gStyle->SetOptLogy(0);
+  gStyle->SetOptLogz(0);
+  gStyle->SetOptFit(1011);
+  gStyle->SetOptFile(0);
+  gStyle->SetOptStat(0); // To display the mean and RMS:   SetOptStat("mr");
+  gStyle->SetStatColor(0); // kWhite
+
+  gStyle->SetOptTitle(0);
+  gStyle->SetTitleFont(42);
+  gStyle->SetTitleColor(1);
+  gStyle->SetTitleTextColor(1);
+  gStyle->SetTitleFillColor(10);
+  gStyle->SetTitleFontSize(0.05);
+
+  TCanvas *c1 = new TCanvas("c1","c1", 1000, 800);
+  c1->SetLogy(setlogy);
+  c1->cd();
+  
+   TFile * filechannel = new TFile( filename.Data() );
+  
+  
+   TH2F *Histo_2D_btracks     = (TH2F*)filechannel->Get( histoname1.Data() );
+   TH2F *Histo_2D_nonbtracks  = (TH2F*)filechannel->Get( histoname2.Data() );
+   
+   int nbinx           = Histo_2D_btracks->GetNbinsX();
+   double low_range_x  = Histo_2D_btracks->GetXaxis()->GetXmin();
+   double high_range_x = Histo_2D_btracks->GetXaxis()->GetXmax();
+   
+   
+   int nbiny           = Histo_2D_btracks->GetNbinsY();
+   double low_range_y  = Histo_2D_btracks->GetYaxis()->GetXmin();
+   double high_range_y = Histo_2D_btracks->GetYaxis()->GetXmax();
+
+  
+  
+   TH1F * histo_20_40_btracks    = new TH1F("histo_20_40_btracks",    "histo_20_40_btracks", nbinx,    low_range_x, high_range_x);
+   TH1F * histo_40_60_btracks    = new TH1F("histo_40_60_btracks",    "histo_40_60_btracks", nbinx,    low_range_x, high_range_x);
+   TH1F * histo_60_80_btracks    = new TH1F("histo_60_80_btracks",    "histo_60_80_btracks", nbinx,    low_range_x, high_range_x);
+   TH1F * histo_80_100_btracks   = new TH1F("histo_80_100_btracks",   "histo_80_100_btracks", nbinx,   low_range_x, high_range_x);
+   TH1F * histo_100_150_btracks  = new TH1F("histo_100_150_btracks",  "histo_100_150_btracks", nbinx,  low_range_x, high_range_x);
+   TH1F * histo_150_300_btracks  = new TH1F("histo_150_300_btracks",  "histo_150_300_btracks", nbinx,  low_range_x, high_range_x);
+   TH1F * histo_300_500_btracks  = new TH1F("histo_300_500_btracks",  "histo_300_500_btracks", nbinx,  low_range_x, high_range_x);
+   TH1F * histo_500_1000_btracks = new TH1F("histo_500_1000_btracks", "histo_500_1000_btracks", nbinx, low_range_x, high_range_x);
+   
+   TH1F * histo_20_40_nonbtracks    = new TH1F("histo_20_40_nonbtracks",    "histo_20_40_nonbtracks", nbinx,    low_range_x, high_range_x);
+   TH1F * histo_40_60_nonbtracks    = new TH1F("histo_40_60_nonbtracks",    "histo_40_60_nonbtracks", nbinx,    low_range_x, high_range_x);
+   TH1F * histo_60_80_nonbtracks    = new TH1F("histo_60_80_nonbtracks",    "histo_60_80_nonbtracks", nbinx,    low_range_x, high_range_x);
+   TH1F * histo_80_100_nonbtracks   = new TH1F("histo_80_100_nonbtracks",   "histo_80_100_nonbtracks", nbinx,   low_range_x, high_range_x);
+   TH1F * histo_100_150_nonbtracks  = new TH1F("histo_100_150_nonbtracks",  "histo_100_150_nonbtracks", nbinx,  low_range_x, high_range_x);
+   TH1F * histo_150_300_nonbtracks  = new TH1F("histo_150_300_nonbtracks",  "histo_150_300_nonbtracks", nbinx,  low_range_x, high_range_x);
+   TH1F * histo_300_500_nonbtracks  = new TH1F("histo_300_500_nonbtracks",  "histo_300_500_nonbtracks", nbinx,  low_range_x, high_range_x);
+   TH1F * histo_500_1000_nonbtracks = new TH1F("histo_500_1000_nonbtracks", "histo_500_1000_nonbtracks", nbinx, low_range_x, high_range_x);
+  
+   double x[nbiny], x_e[nbiny];
+
+  
+   
+  for(int i=0; i<nbiny; i++){
+   
+     x[i]   = low_range_y + i*(high_range_y - low_range_y)/nbinx;
+     x_e[i] = (high_range_y - low_range_y)/nbinx;
+     
+     
+     for(int j=1; j<= nbinx; j++){
+       
+       if(x[i] > 20. && x[i] <= 40.)    histo_20_40_btracks->SetBinContent(j,    histo_20_40_btracks->GetBinContent(j)    + Histo_2D_btracks->GetBinContent(j, i));
+       if(x[i] > 40. && x[i] <= 60.)    histo_40_60_btracks->SetBinContent(j,    histo_40_60_btracks->GetBinContent(j)    + Histo_2D_btracks->GetBinContent(j, i));
+       if(x[i] > 60. && x[i] <= 80.)    histo_60_80_btracks->SetBinContent(j,    histo_60_80_btracks->GetBinContent(j)    + Histo_2D_btracks->GetBinContent(j, i));
+       if(x[i] > 80. && x[i] <= 100.)   histo_80_100_btracks->SetBinContent(j,   histo_80_100_btracks->GetBinContent(j)   + Histo_2D_btracks->GetBinContent(j, i));
+       if(x[i] > 100. && x[i] <= 150.)  histo_100_150_btracks->SetBinContent(j,  histo_100_150_btracks->GetBinContent(j)  + Histo_2D_btracks->GetBinContent(j, i));
+       if(x[i] > 150. && x[i] <= 300.)  histo_150_300_btracks->SetBinContent(j,  histo_150_300_btracks->GetBinContent(j)  + Histo_2D_btracks->GetBinContent(j, i));
+       if(x[i] > 300. && x[i] <= 500.)  histo_300_500_btracks->SetBinContent(j,  histo_300_500_btracks->GetBinContent(j)  + Histo_2D_btracks->GetBinContent(j, i));
+       if(x[i] > 500. && x[i] <= 1000.) histo_500_1000_btracks->SetBinContent(j, histo_500_1000_btracks->GetBinContent(j) + Histo_2D_btracks->GetBinContent(j, i));
+       
+       
+       if(x[i] > 20. && x[i] <= 40.)    histo_20_40_nonbtracks->SetBinContent(j,    histo_20_40_nonbtracks->GetBinContent(j)    + Histo_2D_nonbtracks->GetBinContent(j, i));
+       if(x[i] > 40. && x[i] <= 60.)    histo_40_60_nonbtracks->SetBinContent(j,    histo_40_60_nonbtracks->GetBinContent(j)    + Histo_2D_nonbtracks->GetBinContent(j, i));
+       if(x[i] > 60. && x[i] <= 80.)    histo_60_80_nonbtracks->SetBinContent(j,    histo_60_80_nonbtracks->GetBinContent(j)    + Histo_2D_nonbtracks->GetBinContent(j, i));
+       if(x[i] > 80. && x[i] <= 100.)   histo_80_100_nonbtracks->SetBinContent(j,   histo_80_100_nonbtracks->GetBinContent(j)   + Histo_2D_nonbtracks->GetBinContent(j, i));
+       if(x[i] > 100. && x[i] <= 150.)  histo_100_150_nonbtracks->SetBinContent(j,  histo_100_150_nonbtracks->GetBinContent(j)  + Histo_2D_nonbtracks->GetBinContent(j, i));
+       if(x[i] > 150. && x[i] <= 300.)  histo_150_300_nonbtracks->SetBinContent(j,  histo_150_300_nonbtracks->GetBinContent(j)  + Histo_2D_nonbtracks->GetBinContent(j, i));
+       if(x[i] > 300. && x[i] <= 500.)  histo_300_500_nonbtracks->SetBinContent(j,  histo_300_500_nonbtracks->GetBinContent(j)  + Histo_2D_nonbtracks->GetBinContent(j, i));
+       if(x[i] > 500. && x[i] <= 1000.) histo_500_1000_nonbtracks->SetBinContent(j, histo_500_1000_nonbtracks->GetBinContent(j) + Histo_2D_nonbtracks->GetBinContent(j, i));
+       
+     }
+
+  }
+  
+  histo_20_40_btracks->SetLineColor(1);
+  histo_40_60_btracks->SetLineColor(2);
+  histo_60_80_btracks->SetLineColor(3);
+  histo_80_100_btracks->SetLineColor(4);
+  histo_100_150_btracks->SetLineColor(5);
+  histo_150_300_btracks->SetLineColor(6);
+  histo_300_500_btracks->SetLineColor(7);
+  histo_500_1000_btracks->SetLineColor(8);
+  
+  
+  histo_20_40_btracks->SetLineWidth(2);
+  histo_40_60_btracks->SetLineWidth(2);
+  histo_60_80_btracks->SetLineWidth(2);
+  histo_80_100_btracks->SetLineWidth(2);
+  histo_100_150_btracks->SetLineWidth(2);
+  histo_150_300_btracks->SetLineWidth(2);
+  histo_300_500_btracks->SetLineWidth(2);
+  histo_500_1000_btracks->SetLineWidth(2);
+
+/*
+  histo_20_40_btracks->Rebin(4);
+  histo_40_60_btracks->Rebin(4);
+  histo_60_80_btracks->Rebin(4);
+  histo_80_100_btracks->Rebin(4);
+  histo_100_150_btracks->Rebin(4);
+  histo_150_300_btracks->Rebin(4);
+  histo_300_500_btracks->Rebin(4);
+  histo_500_1000_btracks->Rebin(4);
+  */
+  
+  histo_20_40_nonbtracks->SetLineColor(1);
+  histo_40_60_nonbtracks->SetLineColor(2);
+  histo_60_80_nonbtracks->SetLineColor(3);
+  histo_80_100_nonbtracks->SetLineColor(4);
+  histo_100_150_nonbtracks->SetLineColor(5);
+  histo_150_300_nonbtracks->SetLineColor(6);
+  histo_300_500_nonbtracks->SetLineColor(7);
+  histo_500_1000_nonbtracks->SetLineColor(8);
+  
+  
+  histo_20_40_nonbtracks  ->SetLineStyle(7);
+  histo_40_60_nonbtracks  ->SetLineStyle(7);
+  histo_60_80_nonbtracks  ->SetLineStyle(7);
+  histo_80_100_nonbtracks ->SetLineStyle(7);
+  histo_100_150_nonbtracks->SetLineStyle(7);
+  histo_150_300_nonbtracks->SetLineStyle(7);
+  histo_300_500_nonbtracks->SetLineStyle(7);
+  histo_500_1000_nonbtracks->SetLineStyle(7);
+  
+  
+  histo_20_40_nonbtracks->SetLineWidth(2);
+  histo_40_60_nonbtracks->SetLineWidth(2);
+  histo_60_80_nonbtracks->SetLineWidth(2);
+  histo_80_100_nonbtracks->SetLineWidth(2);
+  histo_100_150_nonbtracks->SetLineWidth(2);
+  histo_150_300_nonbtracks->SetLineWidth(2);
+  histo_300_500_nonbtracks->SetLineWidth(2);
+  histo_500_1000_nonbtracks->SetLineWidth(2);
+
+/*
+  histo_20_40_nonbtracks->Rebin(4);
+  histo_40_60_nonbtracks->Rebin(4);
+  histo_60_80_nonbtracks->Rebin(4);
+  histo_80_100_nonbtracks->Rebin(4);
+  histo_100_150_nonbtracks->Rebin(4);
+  histo_150_300_nonbtracks->Rebin(4);
+  histo_300_500_nonbtracks->Rebin(4);
+  histo_500_1000_nonbtracks->Rebin(4);
+  */
+  
+  histo_20_40_btracks->SetMinimum();
+  histo_500_1000_btracks->GetXaxis()->SetTitle(xlabel);
+  histo_500_1000_btracks->DrawNormalized();
+  //histo_40_60_btracks->DrawNormalized("same");
+  // histo_60_80_btracks->DrawNormalized("same");
+  histo_80_100_btracks->DrawNormalized("same");
+  // histo_100_150_btracks->DrawNormalized("same");
+  histo_150_300_btracks->DrawNormalized("same");
+  // histo_300_500_btracks->DrawNormalized("same");
+  histo_20_40_btracks->DrawNormalized("same");
+  
+  cout << "mean histo_20_40_btracks    " << histo_20_40_btracks->GetMean() << endl;
+  cout << "mean histo_80_100_btracks   " << histo_80_100_btracks->GetMean() << endl;
+  cout << "mean histo_500_1000_btracks " << histo_500_1000_btracks->GetMean() << endl;
+  
+  
+  
+  histo_20_40_nonbtracks->SetMinimum();
+  histo_500_1000_nonbtracks->DrawNormalized("same");
+  //histo_40_60_nonbtracks->DrawNormalized("same");
+  // histo_60_80_nonbtracks->DrawNormalized("same");
+  histo_80_100_nonbtracks->DrawNormalized("same");
+  // histo_100_150_nonbtracks->DrawNormalized("same");
+  histo_150_300_nonbtracks->DrawNormalized("same");
+  // histo_300_500_nonbtracks->DrawNormalized("same");
+  histo_20_40_nonbtracks->DrawNormalized("same");
+  
+  cout << "mean histo_20_40_nonbtracks    " << histo_20_40_nonbtracks->GetMean() << endl;
+  cout << "mean histo_80_100_nonbtracks   " << histo_80_100_nonbtracks->GetMean() << endl;
+  cout << "mean histo_500_1000_nonbtracks " << histo_500_1000_nonbtracks->GetMean() << endl;
+  
+  TLegend* qw = new TLegend(.80,.70,.95,.90);
+  qw->SetShadowColor(0);
+  qw->SetFillColor(0);
+  qw->SetLineColor(0);
+  qw->AddEntry(histo_20_40_btracks,         " 20 <p_{T}< 40 " , "l");
+  qw->AddEntry(histo_80_100_btracks,        " 80 <p_{T}< 100 " , "l");
+  qw->AddEntry(histo_150_300_btracks,        " 150 <p_{T}< 300 " , "l");
+  qw->AddEntry(histo_500_1000_btracks,      " 500 <p_{T}< 1000 " , "l");
+  qw->AddEntry(histo_20_40_nonbtracks,         " 20 <p_{T}< 40 " , "l");
+  qw->AddEntry(histo_80_100_nonbtracks,        " 80 <p_{T}< 100 " , "l");
+  qw->AddEntry(histo_150_300_nonbtracks,        " 150 <p_{T}< 300 " , "l");
+  qw->AddEntry(histo_500_1000_nonbtracks,      " 500 <p_{T}< 1000 " , "l");
+ 
+  qw->Draw();
+  
+  
+  
+}
+
+
 
 
 void DoPlots(){
@@ -1692,7 +1909,13 @@ void DoPlots(){
   //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_length_btracks_noGS_bjets",    "jetPt_vs_length_nonbtracks_noGS_bjets",   "study_histo.root", "");
   //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_dist_btracks_noGS_bjets",      "jetPt_vs_dist_nonbtracks_noGS_bjets",     "study_histo.root", "");
   //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_nHitStrip_btracks_noGS_bjets", "jetPt_vs_nHitStrip_nonbtracks_noGS_bjets","study_histo.root", "");
-
+  
+  
+  
+  //DoPlots_IPsign_vs_other("IPsign_vs_trackP_btracks_noGS_bjets", "IPsign_vs_trackP_ltracks_ljets", "study_histo.root", "");
+  
+  
+  
 }
 
 

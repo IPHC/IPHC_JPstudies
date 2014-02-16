@@ -34,9 +34,14 @@ class CategoryDef  : public TObject {
   int       withFirstPixelHit;
   TString   histoname;
   TH1D      *histo;//! blabla
+  std::vector<double > binsCalib;
+  double    catIntegral;
+  double    IPmax;
   //TRef historef;
-  void GetHistoFromFile(TFile * thefile);
+  void GetDistribFromFile(TFile * thefile);
+  void FillBinsVector();
   
+  double  calculTrackProba(double IPsigm);
   
   ClassDef(CategoryDef, 1)
 };

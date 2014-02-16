@@ -102,7 +102,7 @@ void JetProbaCalib::Loop()
 {
   double ptmax=10;
   
-  TFile* myfile = new TFile("CalibrationFiles/calibeHistoWrite_NPix0.root", "recreate");
+  TFile* myfile = new TFile("CalibrationFiles/calibeHistoWrite_std.root", "recreate");
   myfile->cd();
   
   if (fChain == 0) return;
@@ -115,7 +115,7 @@ void JetProbaCalib::Loop()
   //Setup categories
   //----------------------------------
   CategoriesDefinition catDef;
-  std::vector<CategoryDef >  vectCategories =  catDef.CategoryList_NPix0();
+  std::vector<CategoryDef >  vectCategories =  catDef.CategoryList();
   
   
   

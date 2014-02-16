@@ -18,7 +18,6 @@ class CategoriesDefinition : public TObject {
   };
   ~CategoriesDefinition() {};
   std::vector<CategoryDef > CategoryList();
-  std::vector<CategoryDef > CategoryList_NPix0();
   ClassDef(CategoriesDefinition, 1)
 };
 

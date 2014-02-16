@@ -43,12 +43,12 @@ bool doDeltaRScan  = false;
 bool doTrackPtScan = false;
 
 
-bool doProbaTracks   = false;
+bool doProbaTracks   = true;
 bool doNewTrackCalib = false;
 
 
-bool doDeltaRcut   = true;
-bool doBDTcut      = false;
+bool doDeltaRcut   = false;
+bool doBDTcut      = true;
 
 
 void HighPtStudy::Loop(const char*fileInPutName)
@@ -65,9 +65,7 @@ void HighPtStudy::Loop(const char*fileInPutName)
   std::vector<CategoryDef > catDefList = pcatDefVector->ListOfCategory;
 
   for(unsigned int i=0; i<catDefList.size(); i++){
-  
-    catDefList[i].GetHistoFromFile(myinputfile );
-  
+    catDefList[i].GetDistribFromFile(myinputfile );
   }
 
   
@@ -206,9 +204,7 @@ void HighPtStudy::Loop(const char*fileInPutName)
   //************************************************
   
   TH2F * jetPt_vs_trackProba_btracks_noGS_bjets    = new TH2F("jetPt_vs_trackProba_btracks_noGS_bjets",    "jetPt_vs_trackProba_btracks_noGS_bjets", 100, 0, 1000, 500, 0, 5);
-  TH2F * jetPt_vs_trackProba_nonbtracks_noGS_bjets = new TH2F("jetPt_vs_trackProba_nonbtracks_noGS_bjets", "jetPt_vs_trackProba_nonbtracks_noGS_bjets", 100, 0, 1000, 500, 0, 5);
- 
-  
+  TH2F * jetPt_vs_trackProba_nonbtracks_noGS_bjets = new TH2F("jetPt_vs_trackProba_nonbtracks_noGS_bjets", "jetPt_vs_trackProba_nonbtracks_noGS_bjets", 100, 0, 1000, 500, 0, 5);  
   
   TH2F * jetPt_vs_trackPt_btracks_noGS_bjets      = new TH2F("jetPt_vs_trackPt_btracks_noGS_bjets",      "jetPt_vs_trackPt_btracks_noGS_bjets",      100, 0, 1000, 100, 0, 500);
   TH2F * jetPt_vs_trackPt_nonbtracks_noGS_bjets   = new TH2F("jetPt_vs_trackPt_nonbtracks_noGS_bjets",   "jetPt_vs_trackPt_nonbtracks_noGS_bjets",   100, 0, 1000, 100, 0, 500);
@@ -243,6 +239,10 @@ void HighPtStudy::Loop(const char*fileInPutName)
   TH2F * jetPt_vs_nHitStrip_btracks_noGS_bjets    = new TH2F("jetPt_vs_nHitStrip_btracks_noGS_bjets",	 "jetPt_vs_nHitStrip_btracks_noGS_bjets",     100, 0, 1000, 20, 0, 20);
   TH2F * jetPt_vs_nHitStrip_nonbtracks_noGS_bjets = new TH2F("jetPt_vs_nHitStrip_nonbtracks_noGS_bjets", "jetPt_vs_nHitStrip_nonbtracks_noGS_bjets",  100, 0, 1000, 20, 0, 20);
 
+
+  TH2F * jetPt_vs_IPsign_btracks_noGS_bjets	 = new TH2F("jetPt_vs_IPsign_btracks_noGS_bjets",    "jetPt_vs_IPsign_btracks_noGS_bjets",     100, 0, 1000, 100, 0, 20);
+  TH2F * jetPt_vs_IPsign_nonbtracks_noGS_bjets   = new TH2F("jetPt_vs_IPsign_nonbtracks_noGS_bjets", "jetPt_vs_IPsign_nonbtracks_noGS_bjets",  100, 0, 1000, 100, 0, 20);
+
   
   //************************************************
   //for performance as function of deltaR and jet pT
@@ -260,14 +260,106 @@ void HighPtStudy::Loop(const char*fileInPutName)
   TH3F * jetPt_vs_TrackPt_vs_JetProba_bjets = new TH3F("jetPt_vs_TrackPt_vs_JetProba_bjets", "jetPt_vs_TrackPt_vs_JetProba_bjets", 100, 0, 1000, 100, 0.0, 0.3, 100, 0, 500 );
   TH3F * jetPt_vs_TrackPt_vs_JetProba_ljets = new TH3F("jetPt_vs_TrackPt_vs_JetProba_ljets", "jetPt_vs_TrackPt_vs_JetProba_ljets", 100, 0, 1000, 100, 0.0, 0.3, 100, 0, 500 );
   
+  //************************************
+  //IPsign vs various distributions
+  //************************************
+  
+  TH2F * IPsign_vs_trackPt_btracks_noGS_bjets       = new TH2F("IPsign_vs_trackPt_btracks_noGS_bjets",      "IPsign_vs_trackPt_btracks_noGS_bjets",      100, 0, 20, 500, 0, 500 );
+  TH2F * IPsign_vs_trackPt_nonbtracks_noGS_bjets    = new TH2F("IPsign_vs_trackPt_nonbtracks_noGS_bjets",   "IPsign_vs_trackPt_nonbtracks_noGS_bjets",   100, 0, 20, 500, 0, 500 );
+  TH2F * IPsign_vs_trackPt_ltracks_ljets            = new TH2F("IPsign_vs_trackPt_ltracks_ljets",           "IPsign_vs_trackPt_ltracks_ljets",           100, 0, 20, 500, 0, 500 ); 
+  
+  TH2F * IPsign_vs_trackP_btracks_noGS_bjets        = new TH2F("IPsign_vs_trackP_btracks_noGS_bjets",       "IPsign_vs_trackP_btracks_noGS_bjets",      100, 0, 20, 500, 0, 500 );
+  TH2F * IPsign_vs_trackP_nonbtracks_noGS_bjets     = new TH2F("IPsign_vs_trackP_nonbtracks_noGS_bjets",    "IPsign_vs_trackP_nonbtracks_noGS_bjets",   100, 0, 20, 500, 0, 500 );
+  TH2F * IPsign_vs_trackP_ltracks_ljets             = new TH2F("IPsign_vs_trackP_ltracks_ljets",            "IPsign_vs_trackP_ltracks_ljets",           100, 0, 20, 500, 0, 500 );
+  
+  TH2F * IPsign_vs_DeltaRJet_btracks_noGS_bjets     = new TH2F("IPsign_vs_DeltaRJet_btracks_noGS_bjets",    "IPsign_vs_DeltaRJet_btracks_noGS_bjets",    100, 0, 20,  100, 0, 0.3);
+  TH2F * IPsign_vs_DeltaRJet_nonbtracks_noGS_bjets  = new TH2F("IPsign_vs_DeltaRJet_nonbtracks_noGS_bjets", "IPsign_vs_DeltaRJet_nonbtracks_noGS_bjets", 100, 0, 20,  100, 0, 0.3);
+  TH2F * IPsign_vs_DeltaRJet_ltracks_ljets          = new TH2F("IPsign_vs_DeltaRJet_ltracks_ljets",         "IPsign_vs_DeltaRJet_ltracks_ljets",         100, 0, 20,  100, 0, 0.3);
+
+  TH2F * IPsign_vs_NPixHit_btracks_noGS_bjets       = new TH2F("IPsign_vs_NPixHit_btracks_noGS_bjets",      "IPsign_vs_NPixHit_btracks_noGS_bjets",      100, 0, 20,  10, 0, 10);
+  TH2F * IPsign_vs_NPixHit_nonbtracks_noGS_bjets    = new TH2F("IPsign_vs_NPixHit_nonbtracks_noGS_bjets",   "IPsign_vs_NPixHit_nonbtracks_noGS_bjets",   100, 0, 20,  10, 0, 10);
+  TH2F * IPsign_vs_NPixHit_ltracks_ljets            = new TH2F("IPsign_vs_NPixHit_ltracks_ljets",           "IPsign_vs_NPixHit_ltracks_ljets",           100, 0, 20,  10, 0, 10);
+
+  TH2F * IPsign_vs_InvMtrtr_btracks_noGS_bjets      = new TH2F("IPsign_vs_InvMtrtr_btracks_noGS_bjets",     "IPsign_vs_InvMtrtr_btracks_noGS_bjets",     100, 0, 20,  100, 0, 10);
+  TH2F * IPsign_vs_InvMtrtr_nonbtracks_noGS_bjets   = new TH2F("IPsign_vs_InvMtrtr_nonbtracks_noGS_bjets",  "IPsign_vs_InvMtrtr_nonbtracks_noGS_bjets",  100, 0, 20,  100, 0, 10);
+  TH2F * IPsign_vs_InvMtrtr_ltracks_ljets           = new TH2F("IPsign_vs_InvMtrtr_ltracks_ljets",          "IPsign_vs_InvMtrtr_ltracks_ljets",          100, 0, 20,  100, 0, 10);
+
+  TH2F * IPsign_vs_PtRel_btracks_noGS_bjets         = new TH2F("IPsign_vs_PtRel_btracks_noGS_bjets",        "IPsign_vs_PtRel_btracks_noGS_bjets",        100, 0, 20,  100, 0, 25);
+  TH2F * IPsign_vs_PtRel_nonbtracks_noGS_bjets      = new TH2F("IPsign_vs_PtRel_nonbtracks_noGS_bjets",     "IPsign_vs_PtRel_nonbtracks_noGS_bjets",     100, 0, 20,  100, 0, 25);
+  TH2F * IPsign_vs_PtRel_ltracks_ljets              = new TH2F("IPsign_vs_PtRel_ltracks_ljets",             "IPsign_vs_PtRel_ltracks_ljets",             100, 0, 20,  100, 0, 25);
+
+  TH2F * IPsign_vs_NormChi2_btracks_noGS_bjets      = new TH2F("IPsign_vs_NormChi2_btracks_noGS_bjets",     "IPsign_vs_NormChi2_btracks_noGS_bjets",     100, 0, 20,  100, 0, 5);
+  TH2F * IPsign_vs_NormChi2_nonbtracks_noGS_bjets   = new TH2F("IPsign_vs_NormChi2_nonbtracks_noGS_bjets",  "IPsign_vs_NormChi2_nonbtracks_noGS_bjets",  100, 0, 20,  100, 0, 5);
+  TH2F * IPsign_vs_NormChi2_ltracks_ljets           = new TH2F("IPsign_vs_NormChi2_ltracks_ljets",          "IPsign_vs_NormChi2_ltracks_ljets",          100, 0, 20,  100, 0, 5);
+
+  TH2F * IPsign_vs_dxy_btracks_noGS_bjets           = new TH2F("IPsign_vs_dxy_btracks_noGS_bjets",          "IPsign_vs_dxy_btracks_noGS_bjets",          100, 0, 20,  -0.2, 0.2);
+  TH2F * IPsign_vs_dxy_nonbtracks_noGS_bjets        = new TH2F("IPsign_vs_dxy_nonbtracks_noGS_bjets",       "IPsign_vs_dxy_nonbtracks_noGS_bjets",       100, 0, 20,  -0.2, 0.2);
+  TH2F * IPsign_vs_dxy_ltracks_ljets                = new TH2F("IPsign_vs_dxy_ltracks_ljets",               "IPsign_vs_dxy_ltracks_ljets",               100, 0, 20,  -0.2, 0.2);
+
+  TH2F * IPsign_vs_dz_btracks_noGS_bjets            = new TH2F("IPsign_vs_dz_btracks_noGS_bjets",           "IPsign_vs_dz_btracks_noGS_bjets",           100, 0, 20,  -0.5, 0.5);
+  TH2F * IPsign_vs_dz_nonbtracks_noGS_bjets         = new TH2F("IPsign_vs_dz_nonbtracks_noGS_bjets",        "IPsign_vs_dz_nonbtracks_noGS_bjets",        100, 0, 20,  -0.5, 0.5);
+  TH2F * IPsign_vs_dz_ltracks_ljets                 = new TH2F("IPsign_vs_dz_ltracks_ljets",                "IPsign_vs_dz_ltracks_ljets",                100, 0, 20,  -0.5, 0.5);
+
+  TH2F * IPsign_vs_length_btracks_noGS_bjets        = new TH2F("IPsign_vs_length_btracks_noGS_bjets",       "IPsign_vs_length_btracks_noGS_bjets",       100, 0, 20,  100, 0, 5);
+  TH2F * IPsign_vs_length_nonbtracks_noGS_bjets     = new TH2F("IPsign_vs_length_nonbtracks_noGS_bjets",    "IPsign_vs_length_nonbtracks_noGS_bjets",    100, 0, 20,  100, 0, 5);
+  TH2F * IPsign_vs_length_ltracks_ljets             = new TH2F("IPsign_vs_length_ltracks_ljets",            "IPsign_vs_length_ltracks_ljets",            100, 0, 20,  100, 0, 5);
+
+  TH2F * IPsign_vs_dist_btracks_noGS_bjets          = new TH2F("IPsign_vs_dist_btracks_noGS_bjets",         "IPsign_vs_dist_btracks_noGS_bjets",    100, 0, 20,  100, -0.07, 0.);
+  TH2F * IPsign_vs_dist_nonbtracks_noGS_bjets       = new TH2F("IPsign_vs_dist_nonbtracks_noGS_bjets",      "IPsign_vs_dist_nonbtracks_noGS_bjets",      100, 0, 20,  100, -0.07, 0.);
+  TH2F * IPsign_vs_dist_ltracks_ljets               = new TH2F("IPsign_vs_dist_ltracks_ljets",              "IPsign_vs_dist_ltracks_ljets",              100, 0, 20,  100, -0.07, 0.);
+
+  TH2F * IPsign_vs_nHitStrip_btracks_noGS_bjets     = new TH2F("IPsign_vs_nHitStrip_btracks_noGS_bjets",    "IPsign_vs_nHitStrip_btracks_noGS_bjets",    100, 0, 20,  20, 0, 20);
+  TH2F * IPsign_vs_nHitStrip_nonbtracks_noGS_bjets  = new TH2F("IPsign_vs_nHitStrip_nonbtracks_noGS_bjets", "IPsign_vs_nHitStrip_nonbtracks_noGS_bjets", 100, 0, 20,  20, 0, 20);
+  TH2F * IPsign_vs_nHitStrip_ltracks_ljets          = new TH2F("IPsign_vs_nHitStrip_ltracks_ljets",         "IPsign_vs_nHitStrip_ltracks_ljets",         100, 0, 20,  20, 0, 20);
+
+  
   
   //************************************
   //IPsign for NPixHit == 1
   //************************************
-  TH1F * IPsign_NPixHit1_bjets = new TH1F("IPsign_NPixHit1_bjets", "IPsign_NPixHit1_bjets", 100, 0, 10);
-  TH1F * IPsign_NPixHit1_cjets = new TH1F("IPsign_NPixHit1_cjets", "IPsign_NPixHit1_cjets", 100, 0, 10);
-  TH1F * IPsign_NPixHit1_ljets = new TH1F("IPsign_NPixHit1_ljets", "IPsign_NPixHit1_ljets", 100, 0, 10);
+  TH1F * IPsign_NPixHit1_bjets = new TH1F("IPsign_NPixHit1_bjets", "IPsign_NPixHit1_bjets", 100, 0, 20);
+  TH1F * IPsign_NPixHit1_cjets = new TH1F("IPsign_NPixHit1_cjets", "IPsign_NPixHit1_cjets", 100, 0, 20);
+  TH1F * IPsign_NPixHit1_ljets = new TH1F("IPsign_NPixHit1_ljets", "IPsign_NPixHit1_ljets", 100, 0, 20);
   
+  TH1F * IPsign_NPixHit0_bjets = new TH1F("IPsign_NPixHit0_bjets", "IPsign_NPixHit0_bjets", 100, 0, 20);
+  TH1F * IPsign_NPixHit0_cjets = new TH1F("IPsign_NPixHit0_cjets", "IPsign_NPixHit0_cjets", 100, 0, 20);
+  TH1F * IPsign_NPixHit0_ljets = new TH1F("IPsign_NPixHit0_ljets", "IPsign_NPixHit0_ljets", 100, 0, 20);
+ 
+  
+  TH2F * IPsign_vs_Chi2_NPixHit1_bjets = new TH2F("IPsign_vs_Chi2_NPixHit1_bjets", "IPsign_vs_Chi2_NPixHit1_bjets", 10, 0, 20, 10, 0, 5);
+  TH2F * IPsign_vs_Chi2_NPixHit1_cjets = new TH2F("IPsign_vs_Chi2_NPixHit1_cjets", "IPsign_vs_Chi2_NPixHit1_cjets", 10, 0, 20, 10, 0, 5);
+  TH2F * IPsign_vs_Chi2_NPixHit1_ljets = new TH2F("IPsign_vs_Chi2_NPixHit1_ljets", "IPsign_vs_Chi2_NPixHit1_ljets", 10, 0, 20, 10, 0, 5);
+  
+  TH2F * IPsign_vs_Chi2_NPixHit0_bjets = new TH2F("IPsign_vs_Chi2_NPixHit0_bjets", "IPsign_vs_Chi2_NPixHit0_bjets", 10, 0, 20, 10, 0, 5);
+  TH2F * IPsign_vs_Chi2_NPixHit0_cjets = new TH2F("IPsign_vs_Chi2_NPixHit0_cjets", "IPsign_vs_Chi2_NPixHit0_cjets", 10, 0, 20, 10, 0, 5);
+  TH2F * IPsign_vs_Chi2_NPixHit0_ljets = new TH2F("IPsign_vs_Chi2_NPixHit0_ljets", "IPsign_vs_Chi2_NPixHit0_ljets", 10, 0, 20, 10, 0, 5);
+  
+  TH2F * IPsign_vs_NStrip_NPixHit0_bjets = new TH2F("IPsign_vs_NStrip_NPixHit0_bjets", "IPsign_vs_NStrip_NPixHit0_bjets", 10, 0, 20, 50, 0, 50);
+  TH2F * IPsign_vs_NStrip_NPixHit0_cjets = new TH2F("IPsign_vs_NStrip_NPixHit0_cjets", "IPsign_vs_NStrip_NPixHit0_cjets", 10, 0, 20, 50, 0, 50);
+  TH2F * IPsign_vs_NStrip_NPixHit0_ljets = new TH2F("IPsign_vs_NStrip_NPixHit0_ljets", "IPsign_vs_NStrip_NPixHit0_ljets", 10, 0, 20, 50, 0, 50);
+  
+  TH2F * IPsign_vs_NStrip_NPixHit1_bjets = new TH2F("IPsign_vs_NStrip_NPixHit1_bjets", "IPsign_vs_NStrip_NPixHit1_bjets", 10, 0, 20, 50, 0, 50);
+  TH2F * IPsign_vs_NStrip_NPixHit1_cjets = new TH2F("IPsign_vs_NStrip_NPixHit1_cjets", "IPsign_vs_NStrip_NPixHit1_cjets", 10, 0, 20, 50, 0, 50);
+  TH2F * IPsign_vs_NStrip_NPixHit1_ljets = new TH2F("IPsign_vs_NStrip_NPixHit1_ljets", "IPsign_vs_NStrip_NPixHit1_ljets", 10, 0, 20, 50, 0, 50);
+  
+  
+  TH2F * IPsign_vs_p_NPixHit0_bjets = new TH2F("IPsign_vs_p_NPixHit0_bjets", "IPsign_vs_p_NPixHit0_bjets", 10, 0, 20, 50, 0, 500);
+  TH2F * IPsign_vs_p_NPixHit0_cjets = new TH2F("IPsign_vs_p_NPixHit0_cjets", "IPsign_vs_p_NPixHit0_cjets", 10, 0, 20, 50, 0, 500);
+  TH2F * IPsign_vs_p_NPixHit0_ljets = new TH2F("IPsign_vs_p_NPixHit0_ljets", "IPsign_vs_p_NPixHit0_ljets", 10, 0, 20, 50, 0, 500);
+  
+  TH2F * IPsign_vs_p_NPixHit1_bjets = new TH2F("IPsign_vs_p_NPixHit1_bjets", "IPsign_vs_p_NPixHit1_bjets", 10, 0, 20, 50, 0, 500);
+  TH2F * IPsign_vs_p_NPixHit1_cjets = new TH2F("IPsign_vs_p_NPixHit1_cjets", "IPsign_vs_p_NPixHit1_cjets", 10, 0, 20, 50, 0, 500);
+  TH2F * IPsign_vs_p_NPixHit1_ljets = new TH2F("IPsign_vs_p_NPixHit1_ljets", "IPsign_vs_p_NPixHit1_ljets", 10, 0, 20, 50, 0, 500);
+  
+  TH2F * IPsign_vs_eta_NPixHit0_bjets = new TH2F("IPsign_vs_eta_NPixHit0_bjets", "IPsign_vs_eta_NPixHit0_bjets", 10, 0, 20, 10, 0, 2.5);
+  TH2F * IPsign_vs_eta_NPixHit0_cjets = new TH2F("IPsign_vs_eta_NPixHit0_cjets", "IPsign_vs_eta_NPixHit0_cjets", 10, 0, 20, 10, 0, 2.5);
+  TH2F * IPsign_vs_eta_NPixHit0_ljets = new TH2F("IPsign_vs_eta_NPixHit0_ljets", "IPsign_vs_eta_NPixHit0_ljets", 10, 0, 20, 10, 0, 2.5);
+  
+  TH2F * IPsign_vs_eta_NPixHit1_bjets = new TH2F("IPsign_vs_eta_NPixHit1_bjets", "IPsign_vs_eta_NPixHit1_bjets", 10, 0, 20, 10, 0, 2.5);
+  TH2F * IPsign_vs_eta_NPixHit1_cjets = new TH2F("IPsign_vs_eta_NPixHit1_cjets", "IPsign_vs_eta_NPixHit1_cjets", 10, 0, 20, 10, 0, 2.5);
+  TH2F * IPsign_vs_eta_NPixHit1_ljets = new TH2F("IPsign_vs_eta_NPixHit1_ljets", "IPsign_vs_eta_NPixHit1_ljets", 10, 0, 20, 10, 0, 2.5);
+  
+   
   
   
   TH1F * hdeltaROpt = new TH1F("hdeltaROpt", "hdeltaROpt", 100, 0, 0.4);
@@ -331,7 +423,7 @@ void HighPtStudy::Loop(const char*fileInPutName)
     
     for (int ijet=0; ijet<nJet ; ijet++){
       
-      //if (Jet_pt[ijet]<200 || Jet_pt[ijet]> 300 || fabs(Jet_eta[ijet]) > 1.6) continue;
+      //if (Jet_pt[ijet]<200 || fabs(Jet_eta[ijet]) > 1.6) continue;
       if (Jet_pt[ijet]<20 || fabs(Jet_eta[ijet]) > 1.6) continue;
       
       //if(fabs(Jet_flavour[ijet]) != 5) continue; 
@@ -466,10 +558,8 @@ void HighPtStudy::Loop(const char*fileInPutName)
 	
 	  TLorentzVector thetrack;
           thetrack.SetPtEtaPhiM(Track_pt[jtrack], Track_eta[jtrack], Track_phi[jtrack], 0);
-          
-	  if(fabs(Jet_flavour[ijet]) == 5 && !isGluonSplit) IPsign_NPixHit1_bjets->Fill(Track_IPsig[jtrack]);
-	  if(fabs(Jet_flavour[ijet]) == 4                 ) IPsign_NPixHit1_cjets->Fill(Track_IPsig[jtrack]);
-	  if(fabs(Jet_flavour[ijet]) <  4                 ) IPsign_NPixHit1_ljets->Fill(Track_IPsig[jtrack]);
+	  
+	  
         
           if(jet.DeltaR(thetrack) < deltaROpt){ 
             proba_tmp.push_back(Track_Proba[jtrack]);
@@ -490,8 +580,9 @@ void HighPtStudy::Loop(const char*fileInPutName)
 	  , Track_chi2[itrack], catDefList);
 
 	   if(catnum >=0) {
-	    proba=calculTrackProba( Track_IPsig[itrack], catDefList[catnum]); 	  
-	    proba_tmp.push_back(proba);	
+	    proba= catDefList[catnum].calculTrackProba( Track_IPsig[itrack]); 	  
+	    proba_tmp.push_back(proba);
+	    //cout << "track proba " << proba << endl;	
 	   }else{
 	    /*cout << "no category found for this track " <<  endl;
 	    cout << "Track_p[itrack]		  " << Track_p[itrack]    << endl;
@@ -551,7 +642,7 @@ void HighPtStudy::Loop(const char*fileInPutName)
 	 int catP = 0;
  	
          // Track History information
-         if	   ( cat%e1 == 1		 || cat%e1 == 3)     catP = 1; // BWeakDecay
+         if	   ( cat%e1 == 1		  || cat%e1 == 3)     catP = 1; // BWeakDecay
          else if ((cat%e2 >= e1 && cat%e2 < 2*e1) || cat%e2 >= 3*e1 ) catP = 2; // CWeakDecay
          else if ((cat%e3 >= e2 && cat%e3 < 2*e2) || cat%e3 >= 3*e2 ) catP = 3; // TauDecay
          else if ((cat%e4 >= e3 && cat%e4 < 2*e3) || cat%e4 >= 3*e3 ) catP = 4; // Conversion
@@ -596,6 +687,55 @@ void HighPtStudy::Loop(const char*fileInPutName)
    	 Weight = 1;
 
    	   
+         if(Track_nHitPixel[itrack] == 1){
+	   if(fabs(Jet_flavour[ijet]) == 5 && !isGluonSplit && catP == 1) {
+	     IPsign_NPixHit1_bjets->Fill(Track_IPsig[itrack]);
+	     IPsign_vs_Chi2_NPixHit1_bjets->Fill(Track_IPsig[itrack],   Track_chi2[itrack]);
+	     IPsign_vs_NStrip_NPixHit1_bjets->Fill(Track_IPsig[itrack], Track_nHitAll[itrack] - Track_nHitPixel[itrack]);
+	     IPsign_vs_p_NPixHit1_bjets->Fill(Track_IPsig[itrack],      Track_p[itrack]);
+	     IPsign_vs_eta_NPixHit1_bjets->Fill(Track_IPsig[itrack],    fabs(Track_eta[itrack]));
+	   }
+	   if(fabs(Jet_flavour[ijet]) == 4 && catP == 2) {
+	     IPsign_NPixHit1_cjets->Fill(Track_IPsig[itrack]);
+	     IPsign_vs_Chi2_NPixHit1_cjets->Fill(Track_IPsig[itrack],   Track_chi2[itrack]);
+	     IPsign_vs_NStrip_NPixHit1_cjets->Fill(Track_IPsig[itrack], Track_nHitAll[itrack] - Track_nHitPixel[itrack]);
+	     IPsign_vs_p_NPixHit1_cjets->Fill(Track_IPsig[itrack],      Track_p[itrack]);  
+	     IPsign_vs_eta_NPixHit1_cjets->Fill(Track_IPsig[itrack],    fabs(Track_eta[itrack]));    
+	   }
+	   if(fabs(Jet_flavour[ijet]) <  4		   ) {
+	     IPsign_NPixHit1_ljets->Fill(Track_IPsig[itrack]);
+	     IPsign_vs_Chi2_NPixHit1_ljets->Fill(Track_IPsig[itrack],   Track_chi2[itrack]);
+	     IPsign_vs_NStrip_NPixHit1_ljets->Fill(Track_IPsig[itrack], Track_nHitAll[itrack] - Track_nHitPixel[itrack]);
+	     IPsign_vs_p_NPixHit1_ljets->Fill(Track_IPsig[itrack],      Track_p[itrack]);    
+	     IPsign_vs_eta_NPixHit1_ljets->Fill(Track_IPsig[itrack],    fabs(Track_eta[itrack]));	      
+	   }
+	 }
+         if(Track_nHitPixel[itrack] == 0){
+	   if(fabs(Jet_flavour[ijet]) == 5 && !isGluonSplit && catP == 1) {
+	     IPsign_NPixHit0_bjets->Fill(Track_IPsig[itrack]);
+	     IPsign_vs_Chi2_NPixHit0_bjets->Fill(Track_IPsig[itrack],   Track_chi2[itrack]);
+	     IPsign_vs_NStrip_NPixHit0_bjets->Fill(Track_IPsig[itrack], Track_nHitAll[itrack] - Track_nHitPixel[itrack]);
+	     IPsign_vs_p_NPixHit0_bjets->Fill(Track_IPsig[itrack],      Track_p[itrack]);  
+	     IPsign_vs_eta_NPixHit0_bjets->Fill(Track_IPsig[itrack],    fabs(Track_eta[itrack]));     
+	   }
+	   if(fabs(Jet_flavour[ijet]) == 4 && catP == 2 ) {
+	     IPsign_NPixHit0_cjets->Fill(Track_IPsig[itrack]);
+	     IPsign_vs_Chi2_NPixHit0_cjets->Fill(Track_IPsig[itrack],   Track_chi2[itrack]);
+	     IPsign_vs_NStrip_NPixHit0_cjets->Fill(Track_IPsig[itrack], Track_nHitAll[itrack] - Track_nHitPixel[itrack]);
+	     IPsign_vs_p_NPixHit0_cjets->Fill(Track_IPsig[itrack],      Track_p[itrack]);  
+	     IPsign_vs_eta_NPixHit0_cjets->Fill(Track_IPsig[itrack],    fabs(Track_eta[itrack]));     
+	   }
+	   if(fabs(Jet_flavour[ijet]) <  4		   ) {
+	     IPsign_NPixHit0_ljets->Fill(Track_IPsig[itrack]);
+	     IPsign_vs_Chi2_NPixHit0_ljets->Fill(Track_IPsig[itrack],   Track_chi2[itrack]);
+	     IPsign_vs_NStrip_NPixHit0_ljets->Fill(Track_IPsig[itrack], Track_nHitAll[itrack] - Track_nHitPixel[itrack]);
+	     IPsign_vs_p_NPixHit0_ljets->Fill(Track_IPsig[itrack],      Track_p[itrack]);  
+	     IPsign_vs_eta_NPixHit0_ljets->Fill(Track_IPsig[itrack],    fabs(Track_eta[itrack]));     
+	   }
+	 }
+	 
+	 
+	 
          if(catP == 1) { 
 	   
 	   
@@ -610,7 +750,23 @@ void HighPtStudy::Loop(const char*fileInPutName)
            jetPt_vs_dz_btracks_noGS_bjets ->Fill(            Jet_pt[ijet], Track_dz[itrack]);		  
            jetPt_vs_length_btracks_noGS_bjets->Fill(         Jet_pt[ijet], Track_length[itrack]);	   
            jetPt_vs_dist_btracks_noGS_bjets->Fill(           Jet_pt[ijet], Track_dist[itrack]);		 
-           jetPt_vs_nHitStrip_btracks_noGS_bjets ->Fill(     Jet_pt[ijet], Track_nHitStrip[itrack]);	 
+           jetPt_vs_nHitStrip_btracks_noGS_bjets ->Fill(     Jet_pt[ijet], Track_nHitStrip[itrack]);
+	   
+	   
+           IPsign_vs_trackPt_btracks_noGS_bjets->Fill(        Track_IPsig[itrack], Track_pt[itrack]);	 
+           IPsign_vs_trackP_btracks_noGS_bjets->Fill(         Track_IPsig[itrack], Track_p[itrack]);	 
+           IPsign_vs_DeltaRJet_btracks_noGS_bjets->Fill(      Track_IPsig[itrack], deltaRJetTrack); 
+           IPsign_vs_NPixHit_btracks_noGS_bjets->Fill(        Track_IPsig[itrack], Track_nHitPixel[itrack]);
+           IPsign_vs_InvMtrtr_btracks_noGS_bjets->Fill(       Track_IPsig[itrack], Minvtt); 
+           IPsign_vs_PtRel_btracks_noGS_bjets->Fill(          Track_IPsig[itrack], ptRel);
+           IPsign_vs_NormChi2_btracks_noGS_bjets->Fill(       Track_IPsig[itrack], Track_chi2[itrack]); 
+           IPsign_vs_dxy_btracks_noGS_bjets->Fill(            Track_IPsig[itrack], Track_dxy[itrack]);	  	  
+           IPsign_vs_dz_btracks_noGS_bjets ->Fill(            Track_IPsig[itrack], Track_dz[itrack]);		  
+           IPsign_vs_length_btracks_noGS_bjets->Fill(         Track_IPsig[itrack], Track_length[itrack]);	   
+           IPsign_vs_dist_btracks_noGS_bjets->Fill(           Track_IPsig[itrack], Track_dist[itrack]);		 
+           IPsign_vs_nHitStrip_btracks_noGS_bjets ->Fill(     Track_IPsig[itrack], Track_nHitStrip[itrack]);
+	   
+	   	 
 	   
 	   //cout << "Track_dist[itrack] " << Track_dist[itrack] << endl;
            trackPt   = Track_pt[itrack];    
@@ -630,19 +786,55 @@ void HighPtStudy::Loop(const char*fileInPutName)
 	   //BDToutput_btracks_bjets->Fill(BDToutput[itrack]);   
 	 }
          else{
-	 
-	   jetPt_vs_trackProba_nonbtracks_noGS_bjets->Fill(  Jet_pt[ijet], Track_Proba[itrack]);
-           jetPt_vs_trackPt_nonbtracks_noGS_bjets->Fill(     Jet_pt[ijet], Track_pt[itrack]);  
-           jetPt_vs_DeltaRJet_nonbtracks_noGS_bjets->Fill(   Jet_pt[ijet], deltaRJetTrack);    
-           jetPt_vs_NPixHit_nonbtracks_noGS_bjets ->Fill(    Jet_pt[ijet], Track_nHitPixel[itrack]);    
-           jetPt_vs_InvMtrtr_nonbtracks_noGS_bjets->Fill(    Jet_pt[ijet], Minvtt);      
-           jetPt_vs_PtRel_nonbtracks_noGS_bjets->Fill(       Jet_pt[ijet], ptRel);	     
-           jetPt_vs_NormChi2_nonbtracks_noGS_bjets->Fill(    Jet_pt[ijet], Track_chi2[itrack]); 
-           jetPt_vs_dxy_nonbtracks_noGS_bjets->Fill(         Jet_pt[ijet], Track_dxy[itrack]);	  	  
-           jetPt_vs_dz_nonbtracks_noGS_bjets ->Fill(         Jet_pt[ijet], Track_dz[itrack]);		  
-           jetPt_vs_length_nonbtracks_noGS_bjets->Fill(      Jet_pt[ijet], Track_length[itrack]);	   
-           jetPt_vs_dist_nonbtracks_noGS_bjets->Fill(        Jet_pt[ijet], Track_dist[itrack]);		 
-           jetPt_vs_nHitStrip_nonbtracks_noGS_bjets ->Fill(  Jet_pt[ijet], Track_nHitStrip[itrack]);	
+	   
+	   
+	   if(abs(Jet_flavour[ijet]) == 5){
+	     jetPt_vs_trackProba_nonbtracks_noGS_bjets->Fill(  Jet_pt[ijet], Track_Proba[itrack]);
+             jetPt_vs_trackPt_nonbtracks_noGS_bjets->Fill(     Jet_pt[ijet], Track_pt[itrack]);  
+             jetPt_vs_DeltaRJet_nonbtracks_noGS_bjets->Fill(   Jet_pt[ijet], deltaRJetTrack);    
+             jetPt_vs_NPixHit_nonbtracks_noGS_bjets ->Fill(    Jet_pt[ijet], Track_nHitPixel[itrack]);    
+             jetPt_vs_InvMtrtr_nonbtracks_noGS_bjets->Fill(    Jet_pt[ijet], Minvtt);      
+             jetPt_vs_PtRel_nonbtracks_noGS_bjets->Fill(       Jet_pt[ijet], ptRel);	     
+             jetPt_vs_NormChi2_nonbtracks_noGS_bjets->Fill(    Jet_pt[ijet], Track_chi2[itrack]); 
+             jetPt_vs_dxy_nonbtracks_noGS_bjets->Fill(         Jet_pt[ijet], Track_dxy[itrack]);	  	  
+             jetPt_vs_dz_nonbtracks_noGS_bjets ->Fill(         Jet_pt[ijet], Track_dz[itrack]);		  
+             jetPt_vs_length_nonbtracks_noGS_bjets->Fill(      Jet_pt[ijet], Track_length[itrack]);	   
+             jetPt_vs_dist_nonbtracks_noGS_bjets->Fill(        Jet_pt[ijet], Track_dist[itrack]);		 
+             jetPt_vs_nHitStrip_nonbtracks_noGS_bjets ->Fill(  Jet_pt[ijet], Track_nHitStrip[itrack]);	
+	   
+	   
+             IPsign_vs_trackPt_nonbtracks_noGS_bjets->Fill(     Track_IPsig[itrack], Track_pt[itrack]);  
+             IPsign_vs_trackP_nonbtracks_noGS_bjets->Fill(      Track_IPsig[itrack], Track_p[itrack]);  
+             IPsign_vs_DeltaRJet_nonbtracks_noGS_bjets->Fill(   Track_IPsig[itrack], deltaRJetTrack);    
+             IPsign_vs_NPixHit_nonbtracks_noGS_bjets ->Fill(    Track_IPsig[itrack], Track_nHitPixel[itrack]);    
+             IPsign_vs_InvMtrtr_nonbtracks_noGS_bjets->Fill(    Track_IPsig[itrack], Minvtt);      
+             IPsign_vs_PtRel_nonbtracks_noGS_bjets->Fill(       Track_IPsig[itrack], ptRel);	     
+             IPsign_vs_NormChi2_nonbtracks_noGS_bjets->Fill(    Track_IPsig[itrack], Track_chi2[itrack]); 
+             IPsign_vs_dxy_nonbtracks_noGS_bjets->Fill(         Track_IPsig[itrack], Track_dxy[itrack]);	  	  
+             IPsign_vs_dz_nonbtracks_noGS_bjets ->Fill(         Track_IPsig[itrack], Track_dz[itrack]);		  
+             IPsign_vs_length_nonbtracks_noGS_bjets->Fill(      Track_IPsig[itrack], Track_length[itrack]);	   
+             IPsign_vs_dist_nonbtracks_noGS_bjets->Fill(        Track_IPsig[itrack], Track_dist[itrack]);		 
+             IPsign_vs_nHitStrip_nonbtracks_noGS_bjets ->Fill(  Track_IPsig[itrack], Track_nHitStrip[itrack]);	
+	     
+	   }else{
+	     
+             IPsign_vs_trackPt_ltracks_ljets->Fill(     Track_IPsig[itrack], Track_pt[itrack]);  
+             IPsign_vs_trackP_ltracks_ljets->Fill(      Track_IPsig[itrack], Track_p[itrack]);  
+             IPsign_vs_DeltaRJet_ltracks_ljets->Fill(   Track_IPsig[itrack], deltaRJetTrack);    
+             IPsign_vs_NPixHit_ltracks_ljets ->Fill(    Track_IPsig[itrack], Track_nHitPixel[itrack]);    
+             IPsign_vs_InvMtrtr_ltracks_ljets->Fill(    Track_IPsig[itrack], Minvtt);      
+             IPsign_vs_PtRel_ltracks_ljets->Fill(       Track_IPsig[itrack], ptRel);	     
+             IPsign_vs_NormChi2_ltracks_ljets->Fill(    Track_IPsig[itrack], Track_chi2[itrack]); 
+             IPsign_vs_dxy_ltracks_ljets->Fill(         Track_IPsig[itrack], Track_dxy[itrack]);	  	  
+             IPsign_vs_dz_ltracks_ljets ->Fill(         Track_IPsig[itrack], Track_dz[itrack]);		  
+             IPsign_vs_length_ltracks_ljets->Fill(      Track_IPsig[itrack], Track_length[itrack]);	   
+             IPsign_vs_dist_ltracks_ljets->Fill(        Track_IPsig[itrack], Track_dist[itrack]);		 
+             IPsign_vs_nHitStrip_ltracks_ljets ->Fill(  Track_IPsig[itrack], Track_nHitStrip[itrack]);	
+	     
+	   }
+	   
+	   
+	   
 	   
            trackPt   = Track_pt[itrack];    
            DeltaRJet = deltaRJetTrack; 
@@ -673,7 +865,7 @@ void HighPtStudy::Loop(const char*fileInPutName)
       //****************************
       
       std::vector<double > proba_tmp2;
-      if(doBDTcut){
+      /*if(doBDTcut){
 
         for( int jtrack=Jet_nFirstTrack[ijet]; jtrack< Jet_nLastTrack[ijet]; jtrack++){
 	  bool isSelectedTracks = passTrackSel(Track_nHitAll[jtrack],Track_nHitPixel[jtrack],Track_IP2D[jtrack],Track_pt[jtrack],Track_length[jtrack],Track_chi2[jtrack],Track_zIP[jtrack],Track_dist[jtrack],Track_eta[jtrack],Jet_eta[ijet],Track_phi[jtrack],Jet_phi[ijet],Jet_pt[ijet]);
@@ -685,7 +877,7 @@ void HighPtStudy::Loop(const char*fileInPutName)
 	  //BDTproba /=BDTcalib_ljets->Integral();
           proba_tmp2.push_back(Track_Proba[jtrack]);
         }
-      }
+      }*/
         
       
       double jetP_tmp2 = 0;
@@ -774,7 +966,6 @@ bool HighPtStudy::passTrackSel(int trk, int pix, float ip2d, float pt, float len
   
   if (fabs(ip2d)<0.2) passIP=true;
   if (pix>=2)         passPix=true;
-  //if (pix>=0)         passPix=true;
   if (pt>1.0)         passPt=true;
   if (len<5.0)        passLen=true;
   if (chi2<5.0)       passChi2=true;
@@ -823,52 +1014,6 @@ bool HighPtStudy::TrackPtCut(double jetpT, double trackpt){
   
   
 }
-
-
-
-//-----------------------------------------------------Compute the probability that a track comes from PV ---------------------------------------------------------------------------//
-double HighPtStudy::calculTrackProba( float ipsig, CategoryDef theCat){
-
-   
-  //int catnum = IsInCategory(eta,nhit ,npix ,p, chi, vectCat);
-  
-  
-  double proba= -1000.0;
-  
-  TH1D * thecathisto = theCat.histo;
-  
-  double nbins=thecathisto->GetNbinsX();
-  //double xmin =thecathisto->GetXaxis()->GetXmin();
-  double xmax =thecathisto->GetXaxis()->GetXmax();
-  
-  int nbin = int(fabs(ipsig)*(nbins+1)/xmax);
-  
-  
-  
-  double sum=0.0;
-  for(int i=nbin; i<=(nbins) ; i++){
-    double x=thecathisto->GetBinContent(i);
-    sum=sum+x;
-  }
-  
-  double sum_tot=0.0;
-  for(int i=1; i<=(nbins) ; i++){
-    //double x=myHisto->GetBinContent(i);
-    double x=thecathisto->GetBinContent(i);
-    sum_tot=sum_tot+x;
-  }    
-  
-  proba=sum/sum_tot;
-  if (ipsig < 0) proba=-proba;
-  
-  
-  //if(proba < 0.00001)   cout << "found a proba of " << proba << "  ip/sigma "  << ipsig << "  xmax " << xmax << endl;
-  return proba;
-  
-  
-  
-}
-
 
 
 
