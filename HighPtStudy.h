@@ -432,7 +432,7 @@ public :
    virtual bool  passTrackSel(int trk, int pix, float ip2d, float pt, float len, float chi2, float zip, float dist, float eta, float etaJet, float phi, float phiJet, float ptJet);
 
    
-   virtual double                    jetProbability( std::vector<double>  v) ;
+   virtual double                    jetProbability( std::vector<double>  v, int ipsign) ;
    
    
    bool DeltaRTrackJetCut(double jetpT, double deltaR);

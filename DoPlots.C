@@ -1730,7 +1730,7 @@ void DoPlots_IPsign_vs_other(TString histoname1, TString histoname2, TString fil
   histo_300_500_btracks->SetLineWidth(2);
   histo_500_1000_btracks->SetLineWidth(2);
 
-/*
+
   histo_20_40_btracks->Rebin(4);
   histo_40_60_btracks->Rebin(4);
   histo_60_80_btracks->Rebin(4);
@@ -1739,7 +1739,7 @@ void DoPlots_IPsign_vs_other(TString histoname1, TString histoname2, TString fil
   histo_150_300_btracks->Rebin(4);
   histo_300_500_btracks->Rebin(4);
   histo_500_1000_btracks->Rebin(4);
-  */
+  
   
   histo_20_40_nonbtracks->SetLineColor(1);
   histo_40_60_nonbtracks->SetLineColor(2);
@@ -1770,7 +1770,7 @@ void DoPlots_IPsign_vs_other(TString histoname1, TString histoname2, TString fil
   histo_300_500_nonbtracks->SetLineWidth(2);
   histo_500_1000_nonbtracks->SetLineWidth(2);
 
-/*
+
   histo_20_40_nonbtracks->Rebin(4);
   histo_40_60_nonbtracks->Rebin(4);
   histo_60_80_nonbtracks->Rebin(4);
@@ -1779,7 +1779,7 @@ void DoPlots_IPsign_vs_other(TString histoname1, TString histoname2, TString fil
   histo_150_300_nonbtracks->Rebin(4);
   histo_300_500_nonbtracks->Rebin(4);
   histo_500_1000_nonbtracks->Rebin(4);
-  */
+  
   
   histo_20_40_btracks->SetMinimum();
   histo_500_1000_btracks->GetXaxis()->SetTitle(xlabel);
@@ -1816,14 +1816,14 @@ void DoPlots_IPsign_vs_other(TString histoname1, TString histoname2, TString fil
   qw->SetShadowColor(0);
   qw->SetFillColor(0);
   qw->SetLineColor(0);
-  qw->AddEntry(histo_20_40_btracks,         " 20 <p_{T}< 40 " , "l");
-  qw->AddEntry(histo_80_100_btracks,        " 80 <p_{T}< 100 " , "l");
-  qw->AddEntry(histo_150_300_btracks,        " 150 <p_{T}< 300 " , "l");
-  qw->AddEntry(histo_500_1000_btracks,      " 500 <p_{T}< 1000 " , "l");
-  qw->AddEntry(histo_20_40_nonbtracks,         " 20 <p_{T}< 40 " , "l");
-  qw->AddEntry(histo_80_100_nonbtracks,        " 80 <p_{T}< 100 " , "l");
-  qw->AddEntry(histo_150_300_nonbtracks,        " 150 <p_{T}< 300 " , "l");
-  qw->AddEntry(histo_500_1000_nonbtracks,      " 500 <p_{T}< 1000 " , "l");
+  qw->AddEntry(histo_20_40_btracks,         " 20 <p_{}< 40, btracks " , "l");
+  qw->AddEntry(histo_80_100_btracks,        " 80 <p_{}< 100, btracks " , "l");
+  qw->AddEntry(histo_150_300_btracks,        " 150 <p_{}< 300, btracks " , "l");
+  qw->AddEntry(histo_500_1000_btracks,      " 500 <p_{}< 1000, btracks " , "l");
+  qw->AddEntry(histo_20_40_nonbtracks,         " 20 <p_{}< 40, non btracks " , "l");
+  qw->AddEntry(histo_80_100_nonbtracks,        " 80 <p_{}< 100, non btracks " , "l");
+  qw->AddEntry(histo_150_300_nonbtracks,        " 150 <p_{}< 300, non btracks " , "l");
+  qw->AddEntry(histo_500_1000_nonbtracks,      " 500 <p_{}< 1000, non btracks " , "l");
  
   qw->Draw();
   
@@ -1897,6 +1897,7 @@ void DoPlots(){
   
   
   DoPlots_perf("JetProba", "JetProbaNew","study_histo.root","study_histo.root");
+  //DoPlots_perf("JetProba", "JetProbaNew","study_histo_std-AllTracksNPix2.root","study_histo_std-AllTracksNPix2.root");
   
   //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_trackPt_btracks_noGS_bjets", "jetPt_vs_trackPt_nonbtracks_noGS_bjets","study_histo.root", "Track p_{T} [GeV]");
   //DoPlots_comp_Btracks_vs_NonBTrack("jetPt_vs_DeltaRJet_btracks_noGS_bjets", "jetPt_vs_DeltaRJet_nonbtracks_noGS_bjets","study_histo.root", "#Delta R(track-jet)");
@@ -1912,7 +1913,7 @@ void DoPlots(){
   
   
   
-  //DoPlots_IPsign_vs_other("IPsign_vs_trackP_btracks_noGS_bjets", "IPsign_vs_trackP_ltracks_ljets", "study_histo.root", "");
+  //DoPlots_IPsign_vs_other("IPsign_vs_trackP_btracks_noGS_bjets", "IPsign_vs_trackP_ltracks_ljets", "study_histo_tmp.root", "");
   
   
   
