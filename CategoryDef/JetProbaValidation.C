@@ -280,7 +280,8 @@ void JetProbaValidation::ComputeProba(const char*fileInPutName)
 	  double proba=-1000;
 	   	  
 	  bool passSelection=passTrackSel(Track_nHitAll[itrack],Track_nHitPixel[itrack],Track_IP2D[itrack],
-	   Track_pt[itrack],Track_length[itrack],Track_chi2[itrack],Track_zIP[itrack],Track_dist[itrack],Track_eta[itrack],
+	   //Track_pt[itrack],Track_length[itrack],Track_chi2[itrack],Track_zIP[itrack],Track_dist[itrack],Track_eta[itrack],
+	   Track_pt[itrack],Track_length[itrack],Track_chi2[itrack],Track_dz[itrack],Track_dist[itrack],Track_eta[itrack],
 	   Jet_eta[ijet],Track_phi[itrack],Jet_phi[ijet],Jet_pt[ijet]);   
 	     
 	  
